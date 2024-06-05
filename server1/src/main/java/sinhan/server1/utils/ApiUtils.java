@@ -2,6 +2,7 @@ package sinhan.server1.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 public class ApiUtils {
 
@@ -9,8 +10,8 @@ public class ApiUtils {
         return new ApiResult(true, data, null);
     }
 
-    public static ApiResult error(String message) {
-        return new ApiResult(false, null, message);
+    public static <T> ApiResult<T> error(T message, HttpStatus httpStatus) {
+        return new ApiResult(false, null, new ApiError(message, httpStatus));
     }
 
     @Getter
@@ -19,7 +20,14 @@ public class ApiUtils {
 
         private boolean success;
         private T response;
-        private String error;
+        private ApiError error;
     }
 
+    @Getter
+    @AllArgsConstructor
+    static class ApiError<T> {
+
+        private T message;
+        private HttpStatus httpStatus;
+    }
 }
