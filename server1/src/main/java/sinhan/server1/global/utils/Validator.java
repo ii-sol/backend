@@ -1,4 +1,4 @@
-package sinhan.server1.utils;
+package sinhan.server1.global.utils;
 
 import java.util.regex.Pattern;
 
