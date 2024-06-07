@@ -1,9 +1,6 @@
 package sinhan.server1.domain.user.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,11 +18,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "phone_num")
     private String phoneNum;
     private String name;
     private String birthdate;
+    @Column(name = "account_info")
     private String accountInfo;
     private int role;
+    @Column(name = "profile_id")
     private int profileId;
 
 }
