@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@AllArgsConstructor
 @Component
 public class UserFindOneResponse {
 
