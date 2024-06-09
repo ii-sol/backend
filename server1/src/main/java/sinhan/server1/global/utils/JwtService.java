@@ -1,12 +1,9 @@
 package sinhan.server1.global.utils;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 import sinhan.server1.global.utils.secret.Secret;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
