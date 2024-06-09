@@ -10,7 +10,6 @@ import sinhan.server1.domain.user.dto.UserFindOneResponse;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class User {
 
     @Id
