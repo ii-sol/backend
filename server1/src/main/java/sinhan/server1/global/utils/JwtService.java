@@ -18,36 +18,43 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Service
 public class JwtService {
 
-    private static final long EXPIRATION_TIME = 1800 * 1000; // 30 minutes
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1800 * 1000; // 30 minutes
+    private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
 
-    public String createParentJwt(String userId, Map<String, String> children) {
-        return createJwt(userId, children, "parents");
+    public String createAccessToken(String userId, Map<String, String> claims, String familyType) {
+        return createToken(userId, claims, familyType, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
-    public String createChildJwt(String userId, Map<String, String> parents) {
-        return createJwt(userId, parents, "children");
+    public String createRefreshToken(String userId, Map<String, String> claims, String familyType) {
+        return createToken(userId, claims, familyType, REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
-    private String createJwt(String userId, Map<String, String> claims, String familyType) {
+    private String createToken(String userId, Map<String, String> claims, String familyType,
+        long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
             .claim("userId", userId)
             .claim(familyType, claims)
             .setIssuedAt(now)
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+            .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
             .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
             .compact();
     }
 
-    public String getJwt() {
+    public String getAccessToken() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         return request.getHeader("accessToken");
     }
 
+    public String getRefreshToken() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return request.getHeader("refreshToken");
+    }
+
     public Map<String, String> getUserInfo() throws AuthException {
         // 1. JWT 추출
-        String accessToken = getJwt();
+        String accessToken = getAccessToken();
         if (accessToken == null || accessToken.isEmpty()) {
             throw new AuthException("EMPTY_JWT");
         }
