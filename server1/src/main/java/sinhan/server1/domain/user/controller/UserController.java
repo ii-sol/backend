@@ -22,8 +22,4 @@ public class UserController {
 
     private UserService userService;
 
-    @PostMapping("/login")
-    public ApiUtils.ApiResult<UserFindOneResponse> login(@Valid @RequestBody UserFindRequest userFindRequest){
-        return success(userService.login(userFindRequest));
-    }
 }
