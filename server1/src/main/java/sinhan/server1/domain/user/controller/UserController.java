@@ -1,6 +1,6 @@
 package sinhan.server1.domain.user.controller;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import sinhan.server1.domain.auth.entity.FamilyInfo;
@@ -18,7 +18,7 @@ import static sinhan.server1.global.utils.ApiUtils.success;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
@@ -27,19 +27,19 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ApiUtils.ApiResult<UserFindOneResponse> getUser(@PathVariable("id") int id) throws AuthException {
-        Map<String, Object> userInfo = jwtService.getUserInfo();
-        if ((int) userInfo.get("userId") != id) {
-            List<FamilyInfo> familyInfo = (List<FamilyInfo>) userInfo.get("familyInfo");
-
-            Set<Integer> familyIds = new java.util.HashSet<>();
-            for (FamilyInfo info : familyInfo) {
-                familyIds.add(info.getId());
-            }
-
-            if (!familyIds.contains(id)) {
-                throw new AuthException("UNAUTHORIZED");
-            }
-        }
+//        Map<String, Object> userInfo = jwtService.getUserInfo();
+//        if ((int) userInfo.get("userId") != id) {
+//            List<FamilyInfo> familyInfo = (List<FamilyInfo>) userInfo.get("familyInfo");
+//
+//            Set<Integer> familyIds = new java.util.HashSet<>();
+//            for (FamilyInfo info : familyInfo) {
+//                familyIds.add(info.getId());
+//            }
+//
+//            if (!familyIds.contains(id)) {
+//                throw new AuthException("UNAUTHORIZED");
+//            }
+//        }
 
         UserFindOneResponse user = userService.getUser(id);
         return success(user);
