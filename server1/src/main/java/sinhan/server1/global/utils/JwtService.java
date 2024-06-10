@@ -4,14 +4,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import sinhan.server1.domain.auth.entity.FamilyInfo;
 import sinhan.server1.global.utils.exception.AuthException;
 import sinhan.server1.global.utils.secret.Secret;
 import io.jsonwebtoken.Jwts;
@@ -24,20 +22,20 @@ public class JwtService {
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
 
-    public String createAccessToken(String userId, Map<String, String> claims, String familyType) {
-        return createToken(userId, claims, familyType, ACCESS_TOKEN_EXPIRATION_TIME);
+    public String createAccessToken(int role, int userId, Map<String, Object> claims) {
+        return createToken(role, userId, claims, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
-    public String createRefreshToken(String userId, Map<String, String> claims, String familyType) {
-        return createToken(userId, claims, familyType, REFRESH_TOKEN_EXPIRATION_TIME);
+    public String createRefreshToken(int role, int userId, Map<String, Object> claims) {
+        return createToken(role, userId, claims, REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
-    private String createToken(String userId, Map<String, String> claims, String familyType,
-                               long expirationTime) {
+    private String createToken(int role, int userId, Map<String, Object> claims, long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
+                .claim("role", role)
                 .claim("userId", userId)
-                .claim(familyType, claims)
+                .claim("familyInfo", claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
@@ -71,7 +69,7 @@ public class JwtService {
             throw new AuthException("INVALID_JWT");
         }
 
-        // 3. userIdx 추출
+        // 3. userInfo 추출
         return getUserInfoFromClaims(claims);
     }
 
@@ -89,7 +87,7 @@ public class JwtService {
         int userId = claims.getBody().get("userId", Integer.class);
         userInfo.put("userId", userId);
 
-        List<Map<Integer, String>> familyInfo = claims.getBody().get("familyInfo", List.class);
+        List<FamilyInfo> familyInfo = claims.getBody().get("familyInfo", List.class);
         userInfo.put("familyInfo", familyInfo);
 
         return userInfo;
