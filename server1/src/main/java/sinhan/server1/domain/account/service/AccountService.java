@@ -6,13 +6,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import sinhan.server1.domain.account.dto.AccountFindOneResponse;
 import sinhan.server1.domain.account.dto.AccountHistoryFindAllResponse;
+import sinhan.server1.domain.account.dto.AccountTransmitOneRequest;
+import sinhan.server1.domain.account.dto.AccountTransmitOneResponse;
 import sinhan.server1.domain.account.entity.Account;
+import sinhan.server1.domain.account.entity.AccountHistory;
 import sinhan.server1.domain.account.repository.AccountHistoryRepository;
 import sinhan.server1.domain.account.repository.AccountRepository;
 import sinhan.server1.domain.tempuser.TempUser;
 import sinhan.server1.domain.tempuser.TempUserRepository;
+import sinhan.server1.global.exception.CustomException;
+import sinhan.server1.global.exception.ErrorCode;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +32,7 @@ public class AccountService {
     private final AccountHistoryRepository accountHistoryRepository;
     private final TempUserRepository tempUserRepository;
 
+    //개별 계좌 조회
     public AccountFindOneResponse findAccount(int userId, Integer ao) {
 
         TempUser tempUser = getUser(userId);
@@ -33,6 +40,7 @@ public class AccountService {
         return AccountFindOneResponse.from(findAccount);
     }
 
+    //계좌 내역 조회
     public List<AccountHistoryFindAllResponse> findAccountHistory(int userId, Integer year, Integer month, Integer status){
 
         TempUser tempUser = getUser(userId);
@@ -44,22 +52,51 @@ public class AccountService {
                 .map(history -> {
                     Account senderAccount = getAccount(history.getSenderAccount().getId());
                     Account recieverAccount = getAccount(history.getRecieverAccount().getId());
-                    String senderName = getUser(senderAccount.getUser().getId()).getName();
-                    String recieverName = getUser(recieverAccount.getUser().getId()).getName();
+                    TempUser sender = getUser(senderAccount.getUser().getId());
+                    TempUser reciever = getUser(recieverAccount.getUser().getId());
 
-                    return AccountHistoryFindAllResponse.of(history, senderName, recieverName);
+                    return AccountHistoryFindAllResponse.of(history, sender, reciever);
                 }
                 ).toList();
 
         return findAccountHistories;
     }
 
+    //이체하기
+    public AccountTransmitOneResponse transmitMoney(AccountTransmitOneRequest transmitRequest) {
+        Account sendAccount = getAccount(transmitRequest.getSendAccountId());
+        Account recieverAccount = getAccount(transmitRequest.getReceiveAccountId());
+        TempUser reciever = getUser(recieverAccount.getUser().getId());
 
+        //sender와 reciever 계좌 잔액 update
+        sendAccount.updateBalacne(sendAccount.getBalance()-transmitRequest.getAmount());
+        recieverAccount.updateBalacne(recieverAccount.getBalance()+transmitRequest.getAmount());
+        accountRepository.save(sendAccount);
+        accountRepository.save(recieverAccount);
+
+        //계좌 내역에 저장하기
+        AccountHistory newAccountHistory = AccountHistory.builder()
+                .senderAccount(sendAccount)
+                .recieverAccount(recieverAccount)
+                .amount(transmitRequest.getAmount())
+                .messageCode(0)
+                .createDate(LocalDateTime.now())
+                .build();
+
+        accountHistoryRepository.save(newAccountHistory);
+
+        return AccountTransmitOneResponse.of(sendAccount, transmitRequest, reciever);
+
+    }
+
+
+    //사용자 조회
     private TempUser getUser(int userId){
         return tempUserRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     }
 
+    //계좌 조회
     private Account getAccount(int accountId){
         return accountRepository.findById(accountId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_ACCOUNT));

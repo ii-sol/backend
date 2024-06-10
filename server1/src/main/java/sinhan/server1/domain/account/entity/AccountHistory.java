@@ -30,8 +30,7 @@ public class AccountHistory {
 
     @Builder
 
-    public AccountHistory(int id, Account senderAccount, Account recieverAccount, int amount, int messageCode, LocalDateTime createDate) {
-        this.id = id;
+    public AccountHistory( Account senderAccount, Account recieverAccount, int amount, int messageCode, LocalDateTime createDate) {
         this.senderAccount = senderAccount;
         this.recieverAccount = recieverAccount;
         this.amount = amount;

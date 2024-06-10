@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sinhan.server1.domain.account.entity.AccountHistory;
+import sinhan.server1.domain.tempuser.TempUser;
 
 import java.time.LocalDateTime;
 
@@ -19,10 +20,10 @@ public class AccountHistoryFindAllResponse {
     private int messageCode;
     private LocalDateTime createDate;
 
-    public static AccountHistoryFindAllResponse of(AccountHistory accountHistory, String senderName, String recieverName ){
+    public static AccountHistoryFindAllResponse of(AccountHistory accountHistory, TempUser sender, TempUser reciever ){
         return AccountHistoryFindAllResponse.builder()
-                .senderName(senderName)
-                .recieverName(recieverName)
+                .senderName(sender.getName())
+                .recieverName(reciever.getName())
                 .amount(accountHistory.getAmount())
                 .messageCode(accountHistory.getMessageCode())
                 .createDate(accountHistory.getCreateDate())
