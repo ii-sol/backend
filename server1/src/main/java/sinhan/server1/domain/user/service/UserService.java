@@ -35,6 +35,7 @@ public class UserService {
         return user.convertToUserFindOneResponse();
     }
 
+    @Transactional
     public UserFindOneResponse updateUser(UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findById(userUpdateRequest.getId())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
