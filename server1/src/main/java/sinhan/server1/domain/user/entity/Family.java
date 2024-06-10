@@ -7,20 +7,20 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Family {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "parents_id", nullable = false)
-    private int parentsId;
-    @Column(name = "child_id", nullable = false)
-    private int childId;
+    @JoinColumn(name = "parents_id", referencedColumnName = "id", nullable = false, columnDefinition = "INT UNSIGNED")
+    private User parents;
+    @JoinColumn(name = "child_id", referencedColumnName = "id", nullable = false, columnDefinition = "INT UNSIGNED")
+    private User child;
 
-    public Family(int parentsId, int childId) {
-        this.parentsId = parentsId;
-        this.childId = childId;
+    public Family(User parents, User child) {
+        this.parents = parents;
+        this.child = child;
     }
 }
