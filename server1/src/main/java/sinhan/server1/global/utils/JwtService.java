@@ -22,24 +22,24 @@ public class JwtService {
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
 
-    public String createAccessToken(int role, int userId, Map<String, Object> claims) {
-        return createToken(role, userId, claims, ACCESS_TOKEN_EXPIRATION_TIME);
-    }
-
-    public String createRefreshToken(int role, int userId, Map<String, Object> claims) {
-        return createToken(role, userId, claims, REFRESH_TOKEN_EXPIRATION_TIME);
-    }
-
     private String createToken(int role, int userId, Map<String, Object> claims, long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
                 .claim("role", role)
                 .claim("userId", userId)
                 .claim("familyInfo", claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
+                .issuedAt(now)
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(SignatureAlgorithm.HS256, Secret.getJwtKey())
                 .compact();
+    }
+
+    public String createAccessToken(int role, int userId, Map<String, Object> claims) {
+        return createToken(role, userId, claims, ACCESS_TOKEN_EXPIRATION_TIME);
+    }
+
+    public String createRefreshToken(int role, int userId, Map<String, Object> claims) {
+        return createToken(role, userId, null, REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
     public String getAccessToken() {
@@ -63,8 +63,9 @@ public class JwtService {
         Jws<Claims> claims;
         try {
             claims = Jwts.parser()
-                    .setSigningKey(Secret.JWT_SECRET_KEY)
-                    .parseClaimsJws(accessToken);
+                    .verifyWith(Secret.getJwtKey())
+                    .build()
+                    .parseSignedClaims(accessToken);
         } catch (Exception e) {
             throw new AuthException("INVALID_JWT");
         }
