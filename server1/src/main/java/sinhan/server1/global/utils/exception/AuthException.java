@@ -2,7 +2,7 @@ package sinhan.server1.global.utils.exception;
 
 public class AuthException extends Exception {
 
-    private String message;
+    private final String message;
 
     public AuthException(String message) {
         this.message = message;
