@@ -72,4 +72,13 @@ public class UserController {
 
         return isConnected ? success(null) : error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
+
+    @DeleteMapping("/{fo}")
+    public ApiUtils.ApiResult disconnectFamily(@PathVariable int fo){
+        //        Map<String, Object> userInfo = jwtService.getUserInfo();
+
+        int familyId = 2; // jwt 연결하기전까지 임시 데이터 사용
+
+        return null;
+    }
 }
