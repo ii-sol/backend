@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
 import sinhan.server1.domain.user.dto.UserFindRequest;
+import sinhan.server1.domain.user.dto.UserUpdateRequest;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.UserRepository;
 
@@ -32,5 +33,19 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         return user.convertToUserFindOneResponse();
+    }
+
+    public UserFindOneResponse updateUser(UserUpdateRequest userUpdateRequest) {
+        User user = userRepository.findById(userUpdateRequest.getId())
+                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+
+        user.setPhoneNum(userUpdateRequest.getPhoneNum());
+        user.setName(userUpdateRequest.getName());
+        user.setBirthdate(userUpdateRequest.getBirthdate());
+        user.setProfileId(userUpdateRequest.getProfileId());
+
+        User updatedUser = userRepository.save(user);
+
+        return getUser(updatedUser.getId());
     }
 }
