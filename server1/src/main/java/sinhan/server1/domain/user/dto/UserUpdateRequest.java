@@ -1,5 +1,6 @@
 package sinhan.server1.domain.user.dto;
 
+import java.sql.Date;
 import lombok.*;
 
 @Getter
@@ -10,6 +11,6 @@ public class UserUpdateRequest {
     private int id;
     private String phoneNum;
     private String name;
-    private String birthdate;
+    private Date birthdate;
     private int profileId;
 }
