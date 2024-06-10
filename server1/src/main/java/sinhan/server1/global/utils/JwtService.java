@@ -3,10 +3,12 @@ package sinhan.server1.global.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -31,15 +33,15 @@ public class JwtService {
     }
 
     private String createToken(String userId, Map<String, String> claims, String familyType,
-        long expirationTime) {
+                               long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
-            .claim("userId", userId)
-            .claim(familyType, claims)
-            .setIssuedAt(now)
-            .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-            .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
-            .compact();
+                .claim("userId", userId)
+                .claim(familyType, claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
+                .compact();
     }
 
     public String getAccessToken() {
@@ -63,8 +65,8 @@ public class JwtService {
         Jws<Claims> claims;
         try {
             claims = Jwts.parser()
-                .setSigningKey(Secret.JWT_SECRET_KEY)
-                .parseClaimsJws(accessToken);
+                    .setSigningKey(Secret.JWT_SECRET_KEY)
+                    .parseClaimsJws(accessToken);
         } catch (Exception e) {
             throw new AuthException("INVALID_JWT");
         }
@@ -76,41 +78,20 @@ public class JwtService {
     private Map<String, Object> getUserInfoFromClaims(Jws<Claims> claims) throws AuthException {
         Map<String, Object> userInfo = new HashMap<>();
 
-        String userId = claims.getBody().get("userId", String.class);
-        userInfo.put("userId", userId);
-
         String jwtType = claims.getBody().get("typ", String.class);
         if (jwtType == null || (!jwtType.equals("JWT"))) {
             throw new AuthException("INVALID_JWT");
         }
 
-        String familyType = claims.getBody().get("parents") != null ? "parents" : "children";
-        if (familyType.equals("parents")) {
-            userInfo.put("parents", getParentsInfo(claims));
-        } else {
-            userInfo.put("children", getChildrenInfo(claims));
-        }
+        int role = claims.getBody().get("role", Integer.class);
+        userInfo.put("role", role);
+
+        int userId = claims.getBody().get("userId", Integer.class);
+        userInfo.put("userId", userId);
+
+        List<Map<Integer, String>> familyInfo = claims.getBody().get("familyInfo", List.class);
+        userInfo.put("familyInfo", familyInfo);
 
         return userInfo;
-    }
-
-    private List<Map<Integer, String>> getParentsInfo(Jws<Claims> claims)
-        throws AuthException {
-        List<Map<Integer, String>> parentsInfo = claims.getBody().get("parents", List.class);
-        if (parentsInfo == null) {
-            throw new AuthException("PARENTS_SECTION_NOT_FOUND");
-        } else {
-            return parentsInfo;
-        }
-    }
-
-    private List<Map<Integer, String>> getChildrenInfo(Jws<Claims> claims)
-        throws AuthException {
-        List<Map<Integer, String>> childrenInfo = claims.getBody().get("children", List.class);
-        if (childrenInfo == null) {
-            throw new AuthException("CHILD_SECTION_NOT_FOUND");
-        } else {
-            return childrenInfo;
-        }
     }
 }
