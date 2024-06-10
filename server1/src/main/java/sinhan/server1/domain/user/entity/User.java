@@ -15,14 +15,17 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "phone_num")
+    @Column(name = "phone_num", nullable = false)
     private String phoneNum;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String birthdate;
-    @Column(name = "account_info")
+    @Column(name = "account_info", nullable = false)
     private String accountInfo;
+    @Column(nullable = false)
     private int role;
-    @Column(name = "profile_id")
+    @Column(name = "profile_id", nullable = false)
     private int profileId;
 
     public UserFindOneResponse convertToUserFindOneResponse() {

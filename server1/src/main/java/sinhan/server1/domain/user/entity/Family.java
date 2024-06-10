@@ -14,9 +14,9 @@ public class Family {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "parents_id")
+    @Column(name = "parents_id", nullable = false)
     private int parentsId;
-    @Column(name = "child_id")
+    @Column(name = "child_id", nullable = false)
     private int childId;
 
     public Family(int parentsId, int childId) {
