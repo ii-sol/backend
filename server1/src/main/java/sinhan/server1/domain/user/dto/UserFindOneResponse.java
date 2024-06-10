@@ -1,6 +1,7 @@
 package sinhan.server1.domain.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class UserFindOneResponse {
     @JsonProperty(value = "phone_num")
     private String phoneNum;
     private String name;
-    private String birthdate;
+    private Date birthdate;
     @JsonProperty(value = "account_info")
     private String accountInfo;
     private int role;
