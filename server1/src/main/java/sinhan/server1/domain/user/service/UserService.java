@@ -1,7 +1,7 @@
 package sinhan.server1.domain.user.service;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
 import sinhan.server1.domain.user.dto.UserFindRequest;
@@ -11,9 +11,10 @@ import sinhan.server1.domain.user.repository.UserRepository;
 import java.util.NoSuchElementException;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserService {
 
+//    @Autowired
     private UserRepository userRepository;
 
     @Transactional
