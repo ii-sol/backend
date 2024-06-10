@@ -52,7 +52,7 @@ public class JwtService {
         return request.getHeader("refreshToken");
     }
 
-    public Map<String, String> getUserInfo() throws AuthException {
+    public Map getUserInfo() throws AuthException {
         // 1. JWT 추출
         String accessToken = getAccessToken();
         if (accessToken == null || accessToken.isEmpty()) {
@@ -73,8 +73,8 @@ public class JwtService {
         return getUserInfoFromClaims(claims);
     }
 
-    private Map getUserInfoFromClaims(Jws<Claims> claims) throws AuthException {
-        Map userInfo = new HashMap<>();
+    private Map<String, Object> getUserInfoFromClaims(Jws<Claims> claims) throws AuthException {
+        Map<String, Object> userInfo = new HashMap<>();
 
         String userId = claims.getBody().get("userId", String.class);
         userInfo.put("userId", userId);
@@ -94,9 +94,9 @@ public class JwtService {
         return userInfo;
     }
 
-    private List<Map<String, String>> getParentsInfo(Jws<Claims> claims)
+    private List<Map<Integer, String>> getParentsInfo(Jws<Claims> claims)
         throws AuthException {
-        List<Map<String, String>> parentsInfo = claims.getBody().get("parents", List.class);
+        List<Map<Integer, String>> parentsInfo = claims.getBody().get("parents", List.class);
         if (parentsInfo == null) {
             throw new AuthException("PARENTS_SECTION_NOT_FOUND");
         } else {
@@ -104,9 +104,9 @@ public class JwtService {
         }
     }
 
-    private List<Map<String, String>> getChildrenInfo(Jws<Claims> claims)
+    private List<Map<Integer, String>> getChildrenInfo(Jws<Claims> claims)
         throws AuthException {
-        List<Map<String, String>> childrenInfo = claims.getBody().get("children", List.class);
+        List<Map<Integer, String>> childrenInfo = claims.getBody().get("children", List.class);
         if (childrenInfo == null) {
             throw new AuthException("CHILD_SECTION_NOT_FOUND");
         } else {
