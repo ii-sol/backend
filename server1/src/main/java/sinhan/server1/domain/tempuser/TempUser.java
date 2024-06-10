@@ -1,4 +1,4 @@
-package sinhan.server1.domain.user;
+package sinhan.server1.domain.tempuser;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,7 +9,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class TempUser {
     @Id
     private int id;
+    private String name;
+
+    public TempUser(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

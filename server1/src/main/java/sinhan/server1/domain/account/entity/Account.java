@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import sinhan.server1.domain.tempuser.TempUser;
 
 @Entity
 @Getter
@@ -16,6 +17,9 @@ public class Account {
     private int id;
 
     //TODO: User랑 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private TempUser user;
 
     private String accountNum;
 
