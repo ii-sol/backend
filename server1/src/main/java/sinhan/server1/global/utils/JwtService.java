@@ -52,7 +52,7 @@ public class JwtService {
         return request.getHeader("refreshToken");
     }
 
-    public Map getUserInfo() throws AuthException {
+    public Map<String, Object> getUserInfo() throws AuthException {
         // 1. JWT 추출
         String accessToken = getAccessToken();
         if (accessToken == null || accessToken.isEmpty()) {
