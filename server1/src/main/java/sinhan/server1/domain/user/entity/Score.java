@@ -23,11 +23,10 @@ public class Score {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "child_id", referencedColumnName = "id", nullable = false, columnDefinition = "INT UNSIGNED")
     private User child;
-    @Column(nullable = false, columnDefinition = "TINYINT UNSIGNED")
+    @Column(nullable = false, columnDefinition = "TINYINT UNSIGNED  DEFAULT 50")
     private int score;
 
     public Score(User child) {
         this.child = child;
-        score = 50;
     }
 }
