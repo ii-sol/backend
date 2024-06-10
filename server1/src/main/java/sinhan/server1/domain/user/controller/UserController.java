@@ -1,5 +1,6 @@
 package sinhan.server1.domain.user.controller;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import sinhan.server1.global.utils.exception.AuthException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static sinhan.server1.global.utils.ApiUtils.error;
 
@@ -28,12 +30,11 @@ public class UserController {
 //        try {
 //            Map<String, Object> userInfo = jwtService.getUserInfo();
 //            if ((int) userInfo.get("userId") != id) {
-//                String familyType = userInfo.get("parents") != null ? "parents" : "children";
-//                if (familyType.equals("parents")) {
-//                    if(userInfo.get("parents").keySet()==id){
-//                            break;
-//                } else {
-//                    userInfo.get("children");
+//                List<Map<Integer, String>> familyInfo = (List<Map<Integer, String>>) userInfo.get("familyInfo");
+//
+//                Set familyIds;
+//                for (Map<Integer, String> info : familyInfo) {
+//                    familyIds.add(info.k)
 //                }
 //            }
 //
