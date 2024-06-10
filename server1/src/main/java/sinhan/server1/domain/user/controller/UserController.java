@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import sinhan.server1.domain.auth.entity.FamilyInfo;
+import sinhan.server1.domain.user.dto.UserFindOneResponse;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.service.UserService;
 import sinhan.server1.global.utils.ApiUtils;
@@ -26,7 +27,7 @@ public class UserController {
     private JwtService jwtService;
 
     @GetMapping("/{id}")
-    public ApiUtils.ApiResult<User> getUser(@PathVariable("id") int id) throws AuthException {
+    public ApiUtils.ApiResult<UserFindOneResponse> getUser(@PathVariable("id") int id) throws AuthException {
         Map<String, Object> userInfo = jwtService.getUserInfo();
         if ((int) userInfo.get("userId") != id) {
             List<FamilyInfo> familyInfo = (List<FamilyInfo>) userInfo.get("familyInfo");
@@ -41,7 +42,7 @@ public class UserController {
             }
         }
 
-        User user = userService.getUser(id);
+        UserFindOneResponse user = userService.getUser(id);
         return success(user);
     }
 
