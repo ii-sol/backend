@@ -4,17 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import sinhan.server1.domain.auth.entity.FamilyInfo;
+import sinhan.server1.domain.user.dto.FamilySaveRequest;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
 import sinhan.server1.domain.user.dto.UserUpdateRequest;
 import sinhan.server1.domain.user.service.UserService;
 import sinhan.server1.global.utils.ApiUtils;
 import sinhan.server1.global.utils.JwtService;
 import sinhan.server1.global.utils.exception.AuthException;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static sinhan.server1.global.utils.ApiUtils.error;
 import static sinhan.server1.global.utils.ApiUtils.success;
@@ -57,5 +53,23 @@ public class UserController {
         userUpdateRequest.setId(id);
         UserFindOneResponse user = userService.updateUser(userUpdateRequest);
         return user != null ? success(user) : error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("")
+    public ApiUtils.ApiResult connectFamily(@RequestBody FamilySaveRequest familySaveRequest) {
+        //        Map<String, Object> userInfo = jwtService.getUserInfo();
+        //        if ((int) userInfo.get("userId") == id)
+        // int role = userInfo.get("role")
+
+        log.info("1. FamilySaveRequest={}", familySaveRequest);
+        int id = 2; // jwt 연결하기전까지 임시 데이터 사용
+        int role = 1; // jwt 연결하기전까지 임시 데이터 사용
+        familySaveRequest.setId(id);
+        familySaveRequest.setRole(role);
+        log.info("2. FamilySaveRequest={}", familySaveRequest);
+        boolean isConnected = userService.connectFamily(familySaveRequest);
+        log.info("isConnected={}", isConnected);
+
+        return isConnected ? success(null) : error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 }
