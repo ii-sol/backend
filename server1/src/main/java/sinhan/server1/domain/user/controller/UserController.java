@@ -1,10 +1,10 @@
 package sinhan.server1.domain.user.controller;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import sinhan.server1.domain.auth.entity.FamilyInfo;
 import sinhan.server1.domain.user.service.UserService;
 import sinhan.server1.global.utils.ApiUtils;
 import sinhan.server1.global.utils.JwtService;
@@ -27,20 +27,20 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ApiUtils.ApiResult<String> getUser(@PathVariable("id") int id) throws AuthException {
-//        try {
-//            Map<String, Object> userInfo = jwtService.getUserInfo();
-//            if ((int) userInfo.get("userId") != id) {
-//                List<Map<Integer, String>> familyInfo = (List<Map<Integer, String>>) userInfo.get("familyInfo");
-//
-//                Set familyIds;
-//                for (Map<Integer, String> info : familyInfo) {
-//                    familyIds.add(info.k)
-//                }
-//            }
-//
-//        } catch (AuthException e) {
-//            throw new AuthException("");
-//        }
+        try {
+            Map<String, Object> userInfo = jwtService.getUserInfo();
+            if ((int) userInfo.get("userId") != id) {
+                List<FamilyInfo> familyInfo = (List<FamilyInfo>) userInfo.get("familyInfo");
+
+                Set familyIds = Set.of();
+                for (FamilyInfo info : familyInfo) {
+                    familyIds.add(info);
+                }
+            }
+
+        } catch (AuthException e) {
+            throw new AuthException("");
+        }
 
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
