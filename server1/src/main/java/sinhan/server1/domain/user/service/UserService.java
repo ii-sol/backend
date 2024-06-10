@@ -25,4 +25,10 @@ public class UserService {
 
         return loginUser.convertToUserFindOneResponse();
     }
+
+    public UserFindOneResponse getUser(int id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+
+        return user.convertToUserFindOneResponse();
+    }
 }
