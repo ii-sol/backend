@@ -2,6 +2,7 @@ package sinhan.server1.domain.account.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +23,11 @@ public class Account {
 
     private Integer status;
 
+    @Builder
+    public Account(int id, String accountNum, int balance, Integer status) {
+        this.id = id;
+        this.accountNum = accountNum;
+        this.balance = balance;
+        this.status = status;
+    }
 }
