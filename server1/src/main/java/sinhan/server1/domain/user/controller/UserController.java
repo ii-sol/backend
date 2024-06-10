@@ -1,18 +1,15 @@
 package sinhan.server1.domain.user.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import sinhan.server1.domain.user.dto.UserFindOneResponse;
-import sinhan.server1.domain.user.dto.UserFindRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import sinhan.server1.domain.user.service.UserService;
 import sinhan.server1.global.utils.ApiUtils;
+import sinhan.server1.global.utils.JwtService;
+import sinhan.server1.global.utils.exception.AuthException;
 
-import static sinhan.server1.global.utils.ApiUtils.success;
+import static sinhan.server1.global.utils.ApiUtils.error;
 
 @Slf4j
 @RestController
@@ -21,5 +18,17 @@ import static sinhan.server1.global.utils.ApiUtils.success;
 public class UserController {
 
     private UserService userService;
+    private JwtService jwtService;
+
+    @GetMapping("")
+    public ApiUtils.ApiResult getUser(){
+//        try {
+//            int userId = jwtService.getUserInfo().get("userId");
+//        } catch (AuthException e) {
+//            throw new AuthException("INVALID_JWT");
+//        }
+
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+    }
 
 }
