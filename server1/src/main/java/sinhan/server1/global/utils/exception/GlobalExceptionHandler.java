@@ -37,12 +37,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResult<String> handleDataIntegrityViolationException(DataIntegrityViolationException error) {
-        return error(error.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResult<String> handleSQLException(SQLException error) {
         return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
