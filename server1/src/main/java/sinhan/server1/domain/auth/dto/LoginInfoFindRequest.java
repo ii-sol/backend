@@ -3,11 +3,11 @@ package sinhan.server1.domain.auth.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@RequiredArgsConstructor
-@Component
+@AllArgsConstructor
+@Getter
 public class LoginInfoFindRequest {
 
     @JsonProperty(value = "phone_num")
