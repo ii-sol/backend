@@ -12,7 +12,6 @@ import sinhan.server1.domain.user.service.UserService;
 import sinhan.server1.global.utils.ApiUtils;
 import sinhan.server1.global.utils.JwtService;
 import sinhan.server1.global.utils.exception.AuthException;
-import sinhan.server1.global.utils.exception.SqlException;
 
 import static sinhan.server1.global.utils.ApiUtils.error;
 import static sinhan.server1.global.utils.ApiUtils.success;
@@ -58,24 +57,30 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ApiUtils.ApiResult connectFamily(@RequestBody FamilySaveRequest familySaveRequest) throws SqlException {
+    public ApiUtils.ApiResult connectFamily(@RequestBody FamilySaveRequest familySaveRequest) {
         //        Map<String, Object> userInfo = jwtService.getUserInfo();
         //        if ((int) userInfo.get("userId") == id)
         // int role = userInfo.get("role")
 
-        int id = 2; // jwt 연결하기전까지 임시 데이터 사용
+        int id = 1; // jwt 연결하기전까지 임시 데이터 사용
         int role = 1; // jwt 연결하기전까지 임시 데이터 사용
         familySaveRequest.setId(id);
         familySaveRequest.setRole(role);
-        try {
-            FamilyFindOneResponse family = userService.connectFamily(familySaveRequest);
-            if (family != null) {
-                return success("가족 관계가 생성되었습니다.");
-            } else {
-                return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
-            }
-        } catch (SqlException e) {
-            return error("이미 존재하는 가족 관계입니다.", HttpStatus.CONFLICT);
+//        try {
+//            FamilyFindOneResponse family = userService.connectFamily(familySaveRequest);
+//            if (family != null) {
+//                return success("가족 관계가 생성되었습니다.");
+//            } else {
+//                return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+//            }
+//        } catch () {
+//            return error("이미 존재하는 가족 관계입니다.", HttpStatus.CONFLICT);
+//        }
+        FamilyFindOneResponse family = userService.connectFamily(familySaveRequest);
+        if (family != null) {
+            return success("가족 관계가 생성되었습니다.");
+        } else {
+            return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -96,6 +101,6 @@ public class UserController {
 
         userService.disconnectFamily(parentsId, childId);
 
-        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+        return success("가족 관계가 삭제되었습니다.");
     }
 }
