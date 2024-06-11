@@ -3,7 +3,6 @@ package sinhan.server1.domain.user.service;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import sinhan.server1.domain.user.dto.*;
 import sinhan.server1.domain.user.entity.Family;
@@ -73,10 +72,13 @@ public class UserService {
     }
 
     @Transactional
-    public void disconnectFamily(int parentsId, int childId) {
+    public boolean disconnectFamily(int parentsId, int childId) {
         Optional<Family> family = Optional.ofNullable(familyRepository.findByParentsIdAndChildId(parentsId, childId)
                 .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다.")));
 
         familyRepository.delete(family.get().getId());
+
+        Optional<Family> checkFamily = familyRepository.findById(family.get().getId());
+        return checkFamily.isEmpty();
     }
 }
