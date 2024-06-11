@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AccountHistory {
-    @Id
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="account_history_id")
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)

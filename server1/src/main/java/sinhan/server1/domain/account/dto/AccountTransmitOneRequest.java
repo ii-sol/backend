@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class AccountTransmitOneRequest {
-    private int sendAccountId;
-    private int receiveAccountId;
+    private String sendAccountNum;
+    private String receiveAccountNum;
     private int amount;
     private String message;
 }

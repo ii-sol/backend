@@ -7,5 +7,6 @@ import sinhan.server1.domain.tempuser.TempUser;
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     Account findByUserAndStatus(TempUser tempUser, Integer status);
+    Account findByAccountNum(String accountNum);
 
 }

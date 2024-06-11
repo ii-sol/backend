@@ -19,6 +19,7 @@ import sinhan.server1.global.exception.ErrorCode;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,10 +45,14 @@ public class AccountService {
     public List<AccountHistoryFindAllResponse> findAccountHistory(int userId, Integer year, Integer month, Integer status){
 
         TempUser tempUser = getUser(userId);
+        Account findAccount = accountRepository.findByUserAndStatus(tempUser, status);
         LocalDate start = LocalDate.of(year,month,1);
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
 
-        List<AccountHistoryFindAllResponse> findAccountHistories = accountHistoryRepository.findByUserAndStatusAndCreateDateBetween(tempUser, status, start, end)
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.atTime(LocalTime.MAX);
+
+        List<AccountHistoryFindAllResponse> findAccountHistories = accountHistoryRepository.findByUserAndCreateDateBetween(findAccount, startDateTime, endDateTime)
                 .stream()
                 .map(history -> {
                     Account senderAccount = getAccount(history.getSenderAccount().getId());
@@ -64,8 +69,8 @@ public class AccountService {
 
     //이체하기
     public AccountTransmitOneResponse transmitMoney(AccountTransmitOneRequest transmitRequest) {
-        Account sendAccount = getAccount(transmitRequest.getSendAccountId());
-        Account recieverAccount = getAccount(transmitRequest.getReceiveAccountId());
+        Account sendAccount = accountRepository.findByAccountNum(transmitRequest.getSendAccountNum());
+        Account recieverAccount = accountRepository.findByAccountNum(transmitRequest.getReceiveAccountNum());
         TempUser reciever = getUser(recieverAccount.getUser().getId());
 
         //sender와 reciever 계좌 잔액 update
