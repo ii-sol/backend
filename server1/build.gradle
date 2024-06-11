@@ -32,7 +32,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
-    implementation 'io.github.cdimascio:dotenv-java'
+    implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
