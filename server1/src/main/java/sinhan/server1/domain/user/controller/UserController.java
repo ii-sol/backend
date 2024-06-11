@@ -85,7 +85,15 @@ public class UserController {
 
         int id = 1; // jwt 연결하기전까지 임시 데이터 사용
         int familyId = 3; // jwt 연결하기전까지 임시 데이터 사용
+        int role = 1; // jwt 연결하기전까지 임시 데이터 사용
 
-        return null;
+        if (role == 1) {
+            userService.disconnectFamily(id, familyId);
+        } else {
+            userService.disconnectFamily(familyId, id);
+        }
+
+
+        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 }
