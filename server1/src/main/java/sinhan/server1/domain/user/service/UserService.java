@@ -10,9 +10,9 @@ import sinhan.server1.domain.user.entity.Family;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.FamilyRepository;
 import sinhan.server1.domain.user.repository.UserRepository;
-import sinhan.server1.global.utils.exception.SqlException;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -56,7 +56,7 @@ public class UserService {
     }
 
     @Transactional
-    public FamilyFindOneResponse connectFamily(FamilySaveRequest familySaveRequest) throws SqlException {
+    public FamilyFindOneResponse connectFamily(FamilySaveRequest familySaveRequest) {
         User familyUser = userRepository.findByPhoneNum(familySaveRequest.getPhoneNum())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
@@ -69,18 +69,14 @@ public class UserService {
         User parents = (familySaveRequest.getRole() == 1) ? meUser : familyUser;
         User child = (familySaveRequest.getRole() == 1) ? familyUser : meUser;
 
-        try {
-            return familyRepository.save(new Family(parents, child)).convertToFamilyFindOneResponse();
-        } catch (DataIntegrityViolationException e) {
-            throw new SqlException("이미 존재하는 가족입니다.");
-        }
+        return familyRepository.save(new Family(parents, child)).convertToFamilyFindOneResponse();
     }
 
     @Transactional
     public void disconnectFamily(int parentsId, int childId) {
-        Family family = familyRepository.findByParentsIdAndChildId(parentsId, childId);
-        log.info("family={}", family.toString());
+        Optional<Family> family = Optional.ofNullable(familyRepository.findByParentsIdAndChildId(parentsId, childId)
+                .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다.")));
 
-        familyRepository.delete(family.getId());
+        familyRepository.delete(family.get().getId());
     }
 }
