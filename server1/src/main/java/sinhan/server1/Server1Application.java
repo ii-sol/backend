@@ -9,25 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class Server1Application implements CommandLineRunner {
-
-    private final RabbitTemplate rabbitTemplate;
-
-    public Server1Application(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-    }
+public class Server1Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Server1Application.class, args);
     }
 
-    @Bean
-    public Queue queue(@Value("${rabbitmq.queue}") String queueName) {
-        return new Queue(queueName, false);
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        rabbitTemplate.convertAndSend("hello", "Hello from Producer!");
-    }
 }
