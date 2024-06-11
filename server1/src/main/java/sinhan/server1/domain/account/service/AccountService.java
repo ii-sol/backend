@@ -42,13 +42,13 @@ public class AccountService {
     }
 
     //계좌 내역 조회
-    public List<AccountHistoryFindAllResponse> findAccountHistory(int userId, Integer year, Integer month, Integer status){
+    public List<AccountHistoryFindAllResponse> findAccountHistory(int userId, Integer year, Integer month, Integer ao){
 
         TempUser tempUser = getUser(userId);
-        Account findAccount = accountRepository.findByUserAndStatus(tempUser, status);
+        Account findAccount = accountRepository.findByUserAndStatus(tempUser, ao);
+
         LocalDate start = LocalDate.of(year,month,1);
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
-
         LocalDateTime startDateTime = start.atStartOfDay();
         LocalDateTime endDateTime = end.atTime(LocalTime.MAX);
 
@@ -69,15 +69,14 @@ public class AccountService {
 
     //이체하기
     public AccountTransmitOneResponse transmitMoney(AccountTransmitOneRequest transmitRequest) {
+
         Account sendAccount = accountRepository.findByAccountNum(transmitRequest.getSendAccountNum());
         Account recieverAccount = accountRepository.findByAccountNum(transmitRequest.getReceiveAccountNum());
         TempUser reciever = getUser(recieverAccount.getUser().getId());
 
         //sender와 reciever 계좌 잔액 update
-        sendAccount.updateBalacne(sendAccount.getBalance()-transmitRequest.getAmount());
-        recieverAccount.updateBalacne(recieverAccount.getBalance()+transmitRequest.getAmount());
-        accountRepository.save(sendAccount);
-        accountRepository.save(recieverAccount);
+        updateBalance(sendAccount, sendAccount.getBalance()-transmitRequest.getAmount());
+        updateBalance(recieverAccount, recieverAccount.getBalance()+transmitRequest.getAmount());
 
         //계좌 내역에 저장하기
         AccountHistory newAccountHistory = AccountHistory.builder()
@@ -105,5 +104,11 @@ public class AccountService {
     private Account getAccount(int accountId){
         return accountRepository.findById(accountId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_ACCOUNT));
+    }
+
+    //계좌 잔액 update 후 레포지토리에 update
+    private void updateBalance(Account account, int balance){
+        account.setBalacne(balance);
+        accountRepository.save(account);
     }
 }

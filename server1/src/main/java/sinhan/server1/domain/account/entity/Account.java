@@ -35,7 +35,7 @@ public class Account {
         this.status = status;
     }
 
-    public void updateBalacne(int balance) {
+    public void setBalacne(int balance) {
         this.balance = balance;
     }
 }
