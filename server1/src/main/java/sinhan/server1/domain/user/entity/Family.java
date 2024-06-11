@@ -2,6 +2,7 @@ package sinhan.server1.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import sinhan.server1.domain.user.dto.FamilyFindOneResponse;
 
 @Entity
 @Getter
@@ -25,5 +26,9 @@ public class Family {
     public Family(User parents, User child) {
         this.parents = parents;
         this.child = child;
+    }
+
+    public FamilyFindOneResponse convertToFamilyFindOneResponse() {
+        return new FamilyFindOneResponse(id, parents, child);
     }
 }
