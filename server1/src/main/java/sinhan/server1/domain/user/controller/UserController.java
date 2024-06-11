@@ -66,16 +66,7 @@ public class UserController {
         int role = 1; // jwt 연결하기전까지 임시 데이터 사용
         familySaveRequest.setId(id);
         familySaveRequest.setRole(role);
-//        try {
-//            FamilyFindOneResponse family = userService.connectFamily(familySaveRequest);
-//            if (family != null) {
-//                return success("가족 관계가 생성되었습니다.");
-//            } else {
-//                return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
-//            }
-//        } catch () {
-//            return error("이미 존재하는 가족 관계입니다.", HttpStatus.CONFLICT);
-//        }
+
         FamilyFindOneResponse family = userService.connectFamily(familySaveRequest);
         if (family != null) {
             return success("가족 관계가 생성되었습니다.");
@@ -99,8 +90,8 @@ public class UserController {
             childId = 1;
         }
 
-        userService.disconnectFamily(parentsId, childId);
-
-        return success("가족 관계가 삭제되었습니다.");
+        return (userService.disconnectFamily(parentsId, childId)
+                ? success("가족 관계가 삭제되었습니다.")
+                : error("가족 관계가 삭제되지 않았습니다.", HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }
