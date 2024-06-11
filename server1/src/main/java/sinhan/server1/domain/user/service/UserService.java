@@ -55,6 +55,7 @@ public class UserService {
         return getUser(updatedUser.getId());
     }
 
+    @Transactional
     public FamilyFindOneResponse connectFamily(FamilySaveRequest familySaveRequest) throws SqlException {
         User familyUser = userRepository.findByPhoneNum(familySaveRequest.getPhoneNum())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
@@ -73,5 +74,13 @@ public class UserService {
         } catch (DataIntegrityViolationException e) {
             throw new SqlException("이미 존재하는 가족입니다.");
         }
+    }
+
+    @Transactional
+    public void disconnectFamily(int id, int familyId) {
+        Family family = familyRepository.findByParentsIdAndChildId(id, familyId);
+        log.info("family={}", family.toString());
+
+        familyRepository.delete(family.getId());
     }
 }
