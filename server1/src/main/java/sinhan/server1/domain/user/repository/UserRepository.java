@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    Optional<User> findByPhoneNumAndAccountInfo(String phoneNum, String accountInfo);
     Optional<User> findByPhoneNum(String phoneNum);
 
     @Query("SELECT u.phoneNum FROM User u")
