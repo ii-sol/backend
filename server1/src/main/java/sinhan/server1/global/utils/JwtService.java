@@ -9,7 +9,7 @@ import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import sinhan.server1.domain.auth.entity.FamilyInfo;
+import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
 import sinhan.server1.global.utils.exception.AuthException;
 import sinhan.server1.global.utils.secret.Secret;
 import io.jsonwebtoken.Jwts;
@@ -22,7 +22,7 @@ public class JwtService {
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
 
-    private String createToken(int role, int userId, Map<String, Object> claims, long expirationTime) {
+    private String createToken(Integer role, int userId, Map<String, Object> claims, long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
                 .claim("role", role)
@@ -38,8 +38,8 @@ public class JwtService {
         return createToken(role, userId, claims, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
-    public String createRefreshToken(int role, int userId, Map<String, Object> claims) {
-        return createToken(role, userId, null, REFRESH_TOKEN_EXPIRATION_TIME);
+    public String createRefreshToken(int userId) {
+        return createToken(null, userId, null, REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
     public String getAccessToken() {
@@ -88,8 +88,8 @@ public class JwtService {
         int userId = claims.getBody().get("userId", Integer.class);
         userInfo.put("userId", userId);
 
-        List<FamilyInfo> familyInfo = claims.getBody().get("familyInfo", List.class);
-        userInfo.put("familyInfo", familyInfo);
+        List<FamilyInfoResponse> familyInfoResponse = claims.getBody().get("familyInfo", List.class);
+        userInfo.put("familyInfo", familyInfoResponse);
 
         return userInfo;
     }
