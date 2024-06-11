@@ -23,16 +23,6 @@ public class UserService {
     private FamilyRepository familyRepository;
 
     @Transactional
-    public UserFindOneResponse login(UserFindRequest userFindRequest) {
-        User loginUser = userRepository.findByPhoneNumAndAccountInfo(
-                userFindRequest.getPhoneNum(),
-                userFindRequest.getAccountInfo()
-        ).orElseThrow(() -> new NoSuchElementException("아이디가 존재하지 않습니다."));
-
-        return loginUser.convertToUserFindOneResponse();
-    }
-
-    @Transactional
     public UserFindOneResponse getUser(int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
