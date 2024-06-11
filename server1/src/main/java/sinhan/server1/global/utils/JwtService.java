@@ -22,7 +22,7 @@ public class JwtService {
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
 
-    private String createToken(Integer role, int userId, Map<String, Object> claims, long expirationTime) {
+    private String createToken(Integer role, int userId, Map<String, List<Map<Integer, String>>> claims, long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
                 .claim("role", role)
@@ -34,7 +34,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String createAccessToken(int role, int userId, Map<String, Object> claims) {
+    public String createAccessToken(int role, int userId, Map<String, List<Map<Integer, String>>> claims) {
         return createToken(role, userId, claims, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
