@@ -13,6 +13,8 @@ import sinhan.server1.global.utils.ApiUtils;
 import sinhan.server1.global.utils.JwtService;
 import sinhan.server1.global.utils.exception.AuthException;
 
+import java.util.List;
+
 import static sinhan.server1.global.utils.ApiUtils.error;
 import static sinhan.server1.global.utils.ApiUtils.success;
 
@@ -93,5 +95,14 @@ public class UserController {
         return (userService.disconnectFamily(parentsId, childId)
                 ? success("가족 관계가 삭제되었습니다.")
                 : error("가족 관계가 삭제되지 않았습니다.", HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    @GetMapping("/phones")
+    public ApiUtils.ApiResult getPhones(){
+        List<String> phones = userService.getPhones();
+
+        return phones.isEmpty()
+                ? error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND)
+                : success(phones);
     }
 }

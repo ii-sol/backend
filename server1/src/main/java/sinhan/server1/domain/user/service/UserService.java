@@ -10,6 +10,7 @@ import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.FamilyRepository;
 import sinhan.server1.domain.user.repository.UserRepository;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -80,5 +81,10 @@ public class UserService {
 
         Optional<Family> checkFamily = familyRepository.findById(family.get().getId());
         return checkFamily.isEmpty();
+    }
+
+    @Transactional
+    public List<String> getPhones() {
+        return userRepository.findAllPhones();
     }
 }
