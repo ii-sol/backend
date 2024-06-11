@@ -7,8 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import sinhan.server1.domain.user.entity.Family;
 
+import java.util.Optional;
+
 public interface FamilyRepository extends JpaRepository<Family, Integer> {
-    Family findByParentsIdAndChildId(int id, int familyId);
+
+    Optional<Family> findByParentsIdAndChildId(int id, int familyId);
 
     @Modifying
     @Transactional
