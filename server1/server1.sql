@@ -7,3 +7,19 @@ CREATE TABLE user (
     role TINYINT UNSIGNED NOT NULL,
     profile_id TINYINT NOT NULL DEFAULT 1
 );
+
+CREATE TABLE score (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    child_id INT UNSIGNED NOT NULL,
+    score TINYINT UNSIGNED,
+    CONSTRAINT fk_user_id FOREIGN KEY (child_id) REFERENCES User(id) ON DELETE CASCADE
+);
+
+CREATE TABLE family (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    parents_id INT UNSIGNED NOT NULL,
+    child_id INT UNSIGNED NOT NULL,
+    CONSTRAINT fk_user_parents_id FOREIGN KEY (parents_id) REFERENCES User(id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_child_id FOREIGN KEY (child_id) REFERENCES User(id) ON DELETE CASCADE,
+    CONSTRAINT unique_family UNIQUE (parents_id, child_id)
+);
