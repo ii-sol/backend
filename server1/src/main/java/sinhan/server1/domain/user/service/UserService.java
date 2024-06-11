@@ -77,8 +77,8 @@ public class UserService {
     }
 
     @Transactional
-    public void disconnectFamily(int id, int familyId) {
-        Family family = familyRepository.findByParentsIdAndChildId(id, familyId);
+    public void disconnectFamily(int parentsId, int childId) {
+        Family family = familyRepository.findByParentsIdAndChildId(parentsId, childId);
         log.info("family={}", family.toString());
 
         familyRepository.delete(family.getId());

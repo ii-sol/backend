@@ -83,16 +83,18 @@ public class UserController {
     public ApiUtils.ApiResult disconnectFamily(@PathVariable int fo) {
         //        Map<String, Object> userInfo = jwtService.getUserInfo();
 
-        int id = 1; // jwt 연결하기전까지 임시 데이터 사용
-        int familyId = 3; // jwt 연결하기전까지 임시 데이터 사용
+        int parentsId, childId; // jwt 연결하기전까지 임시 데이터 사용
         int role = 1; // jwt 연결하기전까지 임시 데이터 사용
 
         if (role == 1) {
-            userService.disconnectFamily(id, familyId);
+            parentsId = 1; // userInfo.get("userId")
+            childId = 3; // userInfo.get("familyIds").get(fo)
         } else {
-            userService.disconnectFamily(familyId, id);
+            parentsId = 3;
+            childId = 1;
         }
 
+        userService.disconnectFamily(parentsId, childId);
 
         return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
