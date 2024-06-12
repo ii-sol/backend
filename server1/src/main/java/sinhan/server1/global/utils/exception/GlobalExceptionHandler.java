@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,7 +33,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiResult<String> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException error) {
+    public ApiResult<String> handleSQLIntegrityConstraintViolationException(
+        SQLIntegrityConstraintViolationException error) {
         return error(error.getMessage(), HttpStatus.CONFLICT);
     }
 
@@ -50,7 +52,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResult<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException error) {
+    public ApiResult<String> handleMethodArgumentNotValidException(
+        MethodArgumentNotValidException error) {
         return error(error.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
@@ -82,5 +85,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResult<String> handleUnexpectedTypeException(UnexpectedTypeException error) {
         return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ApiResult<String> handleHttpMediaTypeNotSupportedException(
+        HttpMediaTypeNotSupportedException error) {
+        return error(error.getMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 }
