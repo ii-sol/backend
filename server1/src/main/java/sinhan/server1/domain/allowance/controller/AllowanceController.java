@@ -38,5 +38,5 @@ public class AllowanceController {
 
     //용돈 조르기 수락,거절 => 수락시의 송금까지 완료
 
-    //용돈 조르기 내역 조회
+
 }
