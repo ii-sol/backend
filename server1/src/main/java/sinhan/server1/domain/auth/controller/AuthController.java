@@ -55,8 +55,8 @@ public class AuthController {
 
         AllTokenResponse allTokenResponse = new AllTokenResponse(jwtService.createAccessToken(user.getRole(), user.getId(), familyInfo), jwtService.createRefreshToken(user.getId()));
 
-        response.setHeader("accessToken", "Bearer " + allTokenResponse.getAccessToken());
-        response.setHeader("refreshToken", allTokenResponse.getRefreshToken());
+        response.setHeader("Authorization", "Bearer " + allTokenResponse.getAccessToken());
+        response.setHeader("Refresh-Token", allTokenResponse.getRefreshToken());
 
         return success("로그인되었습니다.");
     }
@@ -65,8 +65,8 @@ public class AuthController {
     public ApiUtils.ApiResult logout(HttpServletRequest request, HttpServletResponse response) {
         request.getSession().invalidate();
 
-        response.setHeader("accessToken", "");
-        response.setHeader("refreshToken", "");
+        response.setHeader("Authorization", "");
+        response.setHeader("Refresh-Token", "");
 
         return success("로그아웃되었습니다.");
     }

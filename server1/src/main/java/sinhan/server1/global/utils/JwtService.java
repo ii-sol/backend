@@ -44,12 +44,12 @@ public class JwtService {
 
     public String getAccessToken() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        return request.getHeader("accessToken");
+        return request.getHeader("Authorization");
     }
 
     public String getRefreshToken() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        return request.getHeader("refreshToken");
+        return request.getHeader("Refresh-Token");
     }
 
     public Map<String, Object> getUserInfo() throws AuthException {
