@@ -55,8 +55,8 @@ public class AuthController {
                 jwtService.createRefreshToken(user.getId())
         );
 
-        response.setHeader("Authorization", "Bearer " + allTokenResponse.getAccessToken());
-        response.setHeader("Refresh-Token", allTokenResponse.getRefreshToken());
+        response.setHeader("accessToken", "Bearer " + allTokenResponse.getAccessToken());
+        response.setHeader("refreshToken", allTokenResponse.getRefreshToken());
 
         return success("로그인되었습니다.");
     }
