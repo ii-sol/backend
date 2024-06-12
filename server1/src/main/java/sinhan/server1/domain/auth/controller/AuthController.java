@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sinhan.server1.domain.auth.dto.*;
+import sinhan.server1.domain.auth.dto.AllTokenResponse;
+import sinhan.server1.domain.auth.dto.FamilyInfoInterface;
+import sinhan.server1.domain.auth.dto.JoinInfoSaveRequest;
+import sinhan.server1.domain.auth.dto.LoginInfoFindRequest;
 import sinhan.server1.domain.auth.service.AuthService;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
 import sinhan.server1.domain.user.service.UserService;
@@ -35,9 +38,11 @@ public class AuthController {
 
     @PostMapping("/join")
     public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest) {
-//        authService.join(joinInfoSaveRequest);
+        UserFindOneResponse user = authService.join(joinInfoSaveRequest);
 
-        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+        return user != null
+                ? success("가입되었습니다.")
+                : error("가입에 실패하였습니다.", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/login")
