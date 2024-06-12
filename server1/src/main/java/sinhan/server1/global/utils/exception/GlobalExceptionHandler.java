@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResult<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException error) {
         return error(error.getMessage(), HttpStatus.BAD_REQUEST);
     }
