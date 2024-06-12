@@ -35,7 +35,7 @@ public class JwtService {
     }
 
     public String createAccessToken(int role, int userId, Map<String, List<FamilyInfoInterface>> familyInfo) {
-        return "Bearer " + createToken(role, userId, familyInfo, ACCESS_TOKEN_EXPIRATION_TIME);
+        return createToken(role, userId, familyInfo, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
     public String createRefreshToken(int userId) {
