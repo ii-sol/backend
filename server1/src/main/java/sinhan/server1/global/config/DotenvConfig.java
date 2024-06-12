@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource("classpath:.env")
-public class Config {
+public class DotenvConfig {
 
     @Bean
     public Dotenv dotenv() {
