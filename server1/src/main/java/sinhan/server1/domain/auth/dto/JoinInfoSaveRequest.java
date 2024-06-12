@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import sinhan.server1.domain.user.entity.User;
 
 import java.sql.Date;
 
@@ -29,4 +30,8 @@ public class JoinInfoSaveRequest {
     private int role;
     @JsonProperty(value = "profile_id")
     private int profileId;
+
+    public User convertToUser() {
+        return new User(phoneNum, name, birthdate, accountInfo, role, profileId);
+    }
 }
