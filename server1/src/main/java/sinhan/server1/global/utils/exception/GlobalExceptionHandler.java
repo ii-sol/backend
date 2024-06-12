@@ -3,6 +3,7 @@ package sinhan.server1.global.utils.exception;
 import static sinhan.server1.global.utils.ApiUtils.error;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -47,5 +48,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResult<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException error) {
         return error(error.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResult<String> handleConverterNotFoundException(ConverterNotFoundException error) {
+        return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
