@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiResult<String> handleValidationExceptions(AuthException error) {
+    public ApiResult<String> handleAuthException(AuthException error) {
         return error(error.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
