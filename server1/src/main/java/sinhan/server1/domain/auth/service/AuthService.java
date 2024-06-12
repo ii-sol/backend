@@ -9,8 +9,10 @@ import sinhan.server1.domain.auth.dto.FamilyInfoInterface;
 import sinhan.server1.domain.auth.dto.JoinInfoSaveRequest;
 import sinhan.server1.domain.auth.dto.LoginInfoFindRequest;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
+import sinhan.server1.domain.user.entity.Score;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.FamilyRepository;
+import sinhan.server1.domain.user.repository.ScoreRepository;
 import sinhan.server1.domain.user.repository.UserRepository;
 
 import java.util.List;
@@ -22,26 +24,36 @@ import java.util.NoSuchElementException;
 public class AuthService {
 
     private UserRepository userRepository;
+    private ScoreRepository scoreRepository;
     private FamilyRepository familyRepository;
 
     @Transactional
-    public List<FamilyInfoInterface> getFamilyInfo(int id) {
-        return familyRepository.findMyFamilyInfo(id);
-    }
-
     public UserFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
         userRepository.save(joinInfoSaveRequest.convertToUser());
-        User joinUser = userRepository.findByPhoneNumAndAccountInfo(joinInfoSaveRequest.getPhoneNum(), joinInfoSaveRequest.getAccountInfo())
+        User joinUser = userRepository.findByPhoneNumAndAccountInfo(
+                joinInfoSaveRequest.getPhoneNum(), joinInfoSaveRequest.getAccountInfo())
+            .orElseThrow(() -> new NoSuchElementException("가입에 실패하였습니다."));
+
+        if (joinInfoSaveRequest.getRole() == 2) {
+            scoreRepository.save(new Score(joinUser));
+            Score score = scoreRepository.findByChildId(joinUser.getId())
                 .orElseThrow(() -> new NoSuchElementException("가입에 실패하였습니다."));
-        
+        }
+
         return joinUser.convertToUserFindOneResponse();
     }
 
     @Transactional
     public UserFindOneResponse login(@Valid LoginInfoFindRequest loginInfoFindRequest) {
-        User loginUser = userRepository.findByPhoneNumAndAccountInfo(loginInfoFindRequest.getPhoneNum(), loginInfoFindRequest.getAccountInfo())
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+        User loginUser = userRepository.findByPhoneNumAndAccountInfo(
+                loginInfoFindRequest.getPhoneNum(), loginInfoFindRequest.getAccountInfo())
+            .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         return loginUser.convertToUserFindOneResponse();
+    }
+
+    @Transactional
+    public List<FamilyInfoInterface> getFamilyInfo(int id) {
+        return familyRepository.findMyFamilyInfo(id);
     }
 }
