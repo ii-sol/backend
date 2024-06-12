@@ -22,20 +22,20 @@ public class JwtService {
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
 
-    private String createToken(Integer role, int userId, Map<String, List<Map<Integer, String>>> claims, long expirationTime) {
+    private String createToken(Integer role, int userId, Map<String, FamilyInfoResponse> familyInfo, long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
                 .claim("role", role)
                 .claim("userId", userId)
-                .claim("familyInfo", claims)
+                .claim("familyInfo", familyInfo)
                 .issuedAt(now)
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(SignatureAlgorithm.HS256, Secret.getJwtKey())
                 .compact();
     }
 
-    public String createAccessToken(int role, int userId, Map<String, List<Map<Integer, String>>> claims) {
-        return createToken(role, userId, claims, ACCESS_TOKEN_EXPIRATION_TIME);
+    public String createAccessToken(int role, int userId, Map<String, FamilyInfoResponse> familyInfo) {
+        return createToken(role, userId, familyInfo, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
     public String createRefreshToken(int userId) {
@@ -74,21 +74,21 @@ public class JwtService {
         return getUserInfoFromClaims(claims);
     }
 
-    private Map<String, Object> getUserInfoFromClaims(Jws<Claims> claims) throws AuthException {
+    private Map<String, Object> getUserInfoFromClaims(Jws<Claims> familyInfo) throws AuthException {
         Map<String, Object> userInfo = new HashMap<>();
 
-        String jwtType = claims.getBody().get("typ", String.class);
+        String jwtType = familyInfo.getBody().get("typ", String.class);
         if (jwtType == null || (!jwtType.equals("JWT"))) {
             throw new AuthException("INVALID_JWT");
         }
 
-        int role = claims.getBody().get("role", Integer.class);
+        int role = familyInfo.getBody().get("role", Integer.class);
         userInfo.put("role", role);
 
-        int userId = claims.getBody().get("userId", Integer.class);
+        int userId = familyInfo.getBody().get("userId", Integer.class);
         userInfo.put("userId", userId);
 
-        List<FamilyInfoResponse> familyInfoResponse = claims.getBody().get("familyInfo", List.class);
+        List<FamilyInfoResponse> familyInfoResponse = familyInfo.getBody().get("familyInfo", List.class);
         userInfo.put("familyInfo", familyInfoResponse);
 
         return userInfo;
