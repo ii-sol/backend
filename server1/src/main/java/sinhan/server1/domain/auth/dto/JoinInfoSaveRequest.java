@@ -1,8 +1,7 @@
 package sinhan.server1.domain.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import sinhan.server1.domain.user.entity.User;
@@ -19,17 +18,19 @@ public class JoinInfoSaveRequest {
     private String phoneNum;
     @NotBlank(message = "이름을 입력해주세요.")
     private String name;
-    @NotBlank(message = "생일을 입력해주세요.")
-    @Pattern(regexp = "\\d{8}", message = "생년원일은 8자리 숫자여야 합니다.")
+    @NotNull(message = "생일을 입력해주세요.")
+    @Past(message = "생일은 현재 날짜보다 이전이어야 합니다.")
     private Date birthdate;
     @JsonProperty(value = "account_info")
     @NotBlank(message = "비밀번호를 입력해주세요.")
     @Pattern(regexp = "\\d{6}", message = "비밀번호는 6자리 숫자여야 합니다.")
     private String accountInfo;
-    @NotBlank(message = "역할을 입력해주세요.")
-    private int role;
+    @NotNull(message = "역할을 입력해주세요.")
+    @Min(value = 1, message = "역할은 1 또는 2입니다.")
+    @Max(value = 2, message = "역할은 1 또는 2입니다.")
+    private Integer role;
     @JsonProperty(value = "profile_id")
-    private int profileId;
+    private Integer profileId;
 
     public User convertToUser() {
         return new User(phoneNum, name, birthdate, accountInfo, role, profileId);
