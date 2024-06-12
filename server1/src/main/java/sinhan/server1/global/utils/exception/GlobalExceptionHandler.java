@@ -3,6 +3,7 @@ package sinhan.server1.global.utils.exception;
 import static sinhan.server1.global.utils.ApiUtils.error;
 
 import io.jsonwebtoken.lang.UnknownClassException;
+import io.jsonwebtoken.security.WeakKeyException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -60,6 +61,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResult<String> handleUnknownClassException(UnknownClassException error) {
+        return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResult<String> handleWeakKeyException(WeakKeyException error) {
         return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
