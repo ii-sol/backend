@@ -70,26 +70,26 @@ public class AccountService {
     //이체하기
     public AccountTransmitOneResponse transmitMoney(AccountTransmitOneRequest transmitRequest) {
 
-        Account sendAccount = accountRepository.findByAccountNum(transmitRequest.getSendAccountNum());
+        Account senderAccount = accountRepository.findByAccountNum(transmitRequest.getSendAccountNum());
         Account recieverAccount = accountRepository.findByAccountNum(transmitRequest.getReceiveAccountNum());
         TempUser reciever = getUser(recieverAccount.getUser().getId());
 
         //sender와 reciever 계좌 잔액 update
-        updateBalance(sendAccount, sendAccount.getBalance()-transmitRequest.getAmount());
+        updateBalance(senderAccount, senderAccount.getBalance()-transmitRequest.getAmount());
         updateBalance(recieverAccount, recieverAccount.getBalance()+transmitRequest.getAmount());
 
         //계좌 내역에 저장하기
         AccountHistory newAccountHistory = AccountHistory.builder()
-                .senderAccount(sendAccount)
+                .senderAccount(senderAccount)
                 .recieverAccount(recieverAccount)
                 .amount(transmitRequest.getAmount())
-                .messageCode(0)
+                .messageCode(1)
                 .createDate(LocalDateTime.now())
                 .build();
 
         accountHistoryRepository.save(newAccountHistory);
 
-        return AccountTransmitOneResponse.of(sendAccount, transmitRequest, reciever);
+        return AccountTransmitOneResponse.of(senderAccount, transmitRequest, reciever);
 
     }
 
