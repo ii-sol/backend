@@ -47,7 +47,7 @@ public class AuthController {
 
         Map<String, List<FamilyInfoInterface>> familyInfo = new HashMap<>();
         log.info("userId={}", user.getId());
-        familyInfo.put("familyInfo", authService.getFamily(user.getId()));
+        familyInfo.put("familyInfo", authService.getFamilyInfo(user.getId()));
         familyInfo.get("familyInfo").forEach(info -> log.info("Family Info - ID: {}, Name: {}", info.getId(), info.getName()));
 
         AllTokenResponse allTokenResponse = new AllTokenResponse(
