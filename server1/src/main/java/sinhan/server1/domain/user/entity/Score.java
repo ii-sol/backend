@@ -24,7 +24,7 @@ public class Score {
     @JoinColumn(name = "child_id", referencedColumnName = "id", nullable = false, columnDefinition = "INT UNSIGNED")
     private User child;
     @Column(nullable = false, columnDefinition = "TINYINT UNSIGNED  DEFAULT 50")
-    private int score;
+    private int score = 50;
 
     public Score(User child) {
         this.child = child;
