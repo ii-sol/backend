@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import sinhan.server1.domain.auth.dto.FamilyInfoInterface;
+import sinhan.server1.domain.auth.dto.UserInfoResponse;
 import sinhan.server1.global.utils.exception.AuthException;
 import sinhan.server1.global.utils.secret.Secret;
 import io.jsonwebtoken.Jwts;
@@ -52,7 +53,7 @@ public class JwtService {
         return request.getHeader("Refresh-Token");
     }
 
-    public Map<String, Object> getUserInfo() throws AuthException {
+    public UserInfoResponse getUserInfo() throws AuthException {
         // 1. JWT 추출
         String accessToken = getAccessToken();
         if (accessToken == null || accessToken.isEmpty()) {
@@ -74,23 +75,16 @@ public class JwtService {
         return getUserInfoFromClaims(claims);
     }
 
-    private Map<String, Object> getUserInfoFromClaims(Jws<Claims> familyInfo) throws AuthException {
-        Map<String, Object> userInfo = new HashMap<>();
-
+    private UserInfoResponse getUserInfoFromClaims(Jws<Claims> familyInfo) throws AuthException {
         String jwtType = familyInfo.getBody().get("typ", String.class);
         if (jwtType == null || (!jwtType.equals("JWT"))) {
             throw new AuthException("INVALID_JWT");
         }
 
         int role = familyInfo.getBody().get("role", Integer.class);
-        userInfo.put("role", role);
-
         int userId = familyInfo.getBody().get("userId", Integer.class);
-        userInfo.put("userId", userId);
-
         List<FamilyInfoInterface> familyInfoResponse = familyInfo.getBody().get("familyInfo", List.class);
-        userInfo.put("familyInfo", familyInfoResponse);
 
-        return userInfo;
+        return new UserInfoResponse(role, userId, familyInfoResponse);
     }
 }
