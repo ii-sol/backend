@@ -1,5 +1,6 @@
 package sinhan.server1.domain.auth.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,9 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sinhan.server1.domain.auth.dto.AllTokenResponse;
-import sinhan.server1.domain.auth.dto.JoinInfoSaveRequest;
-import sinhan.server1.domain.auth.dto.LoginInfoFindRequest;
+import sinhan.server1.domain.auth.dto.*;
 import sinhan.server1.domain.auth.service.AuthService;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
 import sinhan.server1.domain.user.service.UserService;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static sinhan.server1.global.utils.ApiUtils.error;
+import static sinhan.server1.global.utils.ApiUtils.success;
 
 @RestController
 @AllArgsConstructor
@@ -41,25 +41,23 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest) {
-
-        /**
-         * "familyInfo": [
-         *   { 10, "자식1" },
-         *   { 11, "자식2" }
-         * ]
-         */
+    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) {
 
         UserFindOneResponse user = authService.login(loginInfoFindRequest);
 
-        Map<String, List<Map<Integer, String>>> familyInfo = new HashMap<>();
+        Map<String, List<FamilyInfoInterface>> familyInfo = new HashMap<>();
+        log.info("userId={}", user.getId());
         familyInfo.put("familyInfo", authService.getFamily(user.getId()));
+        familyInfo.get("familyInfo").forEach(info -> log.info("Family Info - ID: {}, Name: {}", info.getId(), info.getName()));
 
         AllTokenResponse allTokenResponse = new AllTokenResponse(
                 jwtService.createAccessToken(user.getRole(), user.getId(), familyInfo),
                 jwtService.createRefreshToken(user.getId())
         );
 
-        return error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
+        response.setHeader("Authorization", "Bearer " + allTokenResponse.getAccessToken());
+        response.setHeader("Refresh-Token", allTokenResponse.getRefreshToken());
+
+        return success("로그인되었습니다.");
     }
 }
