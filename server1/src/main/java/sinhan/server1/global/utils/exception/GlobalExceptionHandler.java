@@ -5,6 +5,7 @@ import static sinhan.server1.global.utils.ApiUtils.error;
 import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.lang.UnknownClassException;
 import io.jsonwebtoken.security.WeakKeyException;
+import jakarta.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -74,6 +75,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResult<String> handleDecodingException(DecodingException error) {
+        return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResult<String> handleUnexpectedTypeException(UnexpectedTypeException error) {
         return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
