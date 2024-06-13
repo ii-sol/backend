@@ -12,10 +12,13 @@ import lombok.NoArgsConstructor;
 public class TempUser {
     @Id
     private int id;
+
+    private int uniqueId;
     private String name;
 
-    public TempUser(int id, String name) {
+    public TempUser(int id, int uniqueId, String name) {
         this.id = id;
+        this.uniqueId = uniqueId;
         this.name = name;
     }
 }

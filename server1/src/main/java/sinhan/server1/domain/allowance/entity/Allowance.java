@@ -20,11 +20,11 @@ public class Allowance{
     int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parents_id")
+    @JoinColumn(name = "parents_unique_number")
     TempUser parents;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "child_id")
+    @JoinColumn(name = "child_unique_number")
     TempUser child;
 
     String content;
@@ -35,13 +35,16 @@ public class Allowance{
 
     int status;
 
+    int type;
+
     @Builder
-    public Allowance(TempUser parents, TempUser child, String content, int price, LocalDateTime createDate, int status) {
+    public Allowance(TempUser parents, TempUser child, String content, int price, LocalDateTime createDate, int status, int type) {
         this.parents = parents;
         this.child = child;
         this.content = content;
         this.price = price;
         this.createDate = createDate;
         this.status = status;
+        this.type = type;
     }
 }
