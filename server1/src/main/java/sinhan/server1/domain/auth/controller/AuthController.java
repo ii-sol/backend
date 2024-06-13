@@ -16,9 +16,8 @@ import sinhan.server1.domain.auth.dto.JoinInfoSaveRequest;
 import sinhan.server1.domain.auth.dto.LoginInfoFindRequest;
 import sinhan.server1.domain.auth.service.AuthService;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
-import sinhan.server1.domain.user.service.UserService;
 import sinhan.server1.global.utils.ApiUtils;
-import sinhan.server1.global.utils.JwtService;
+import sinhan.server1.global.security.JwtService;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package sinhan.server1.global.utils;
+package sinhan.server1.global.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -17,7 +17,7 @@ import sinhan.server1.domain.auth.dto.UserInfoResponse;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.UserRepository;
 import sinhan.server1.global.utils.exception.AuthException;
-import sinhan.server1.global.utils.secret.Secret;
+import sinhan.server1.global.security.secret.Secret;
 
 import java.util.Collections;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package sinhan.server1.global.utils;
+package sinhan.server1.global.security;
 
 import java.security.MessageDigest;
 

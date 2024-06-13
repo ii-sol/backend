@@ -10,7 +10,7 @@ import sinhan.server1.domain.user.dto.UserFindOneResponse;
 import sinhan.server1.domain.user.dto.UserUpdateRequest;
 import sinhan.server1.domain.user.service.UserService;
 import sinhan.server1.global.utils.ApiUtils;
-import sinhan.server1.global.utils.JwtService;
+import sinhan.server1.global.security.JwtService;
 import sinhan.server1.global.utils.exception.AuthException;
 
 import java.util.List;
