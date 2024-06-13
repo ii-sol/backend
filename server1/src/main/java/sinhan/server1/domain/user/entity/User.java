@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.sql.Date;
 import lombok.*;
+import org.springframework.security.core.userdetails.UserDetails;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
 
 @Entity
@@ -36,6 +37,7 @@ public class User {
         this.birthdate = birthdate;
         this.accountInfo = accountInfo;
         this.role = role;
+        this.profileId = profileId;
     }
 
     public UserFindOneResponse convertToUserFindOneResponse() {
