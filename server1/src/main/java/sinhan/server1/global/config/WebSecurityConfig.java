@@ -26,18 +26,22 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/join", "/login").permitAll()
+                        .requestMatchers("/", "/auth/join", "/auth/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
-                .logout(LogoutConfigurer::permitAll);
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout") // 로그아웃 엔드포인트 설정
+                        .logoutSuccessUrl("/") // 로그아웃 성공 시 리디렉션할 URL
+                        .invalidateHttpSession(true) // 세션 무효화
+                        .deleteCookies("Authorization", "Refresh-Token") // 쿠키 삭제
+                        .permitAll() // 모든 사용자에게 로그아웃 허용
+                );
 
-        // Add JWT filter
         http.addFilterBefore(new JwtAuthenticationFilter(jwtService),
                 UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-
     }
 
     @Bean
