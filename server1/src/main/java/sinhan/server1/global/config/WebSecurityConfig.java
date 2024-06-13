@@ -24,13 +24,13 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/join", "/login").permitAll() // Public endpoints
-                        .anyRequest().authenticated() // All other endpoints require authentication
+                        .requestMatchers("/", "/join", "/login").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .formLogin(AbstractHttpConfigurer::disable) // Disable form login
-                .logout(LogoutConfigurer::permitAll); // Allow logout for all users
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(LogoutConfigurer::permitAll);
 
         // Add JWT filter
         http.addFilterBefore(new JwtAuthenticationFilter(jwtService),
