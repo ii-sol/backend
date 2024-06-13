@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.WeakKeyException;
 import jakarta.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConverterNotFoundException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -92,5 +91,12 @@ public class GlobalExceptionHandler {
     public ApiResult<String> handleHttpMediaTypeNotSupportedException(
         HttpMediaTypeNotSupportedException error) {
         return error(error.getMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResult<String> handleRuntimeExceptionException(
+            RuntimeException error) {
+        return error(error.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
