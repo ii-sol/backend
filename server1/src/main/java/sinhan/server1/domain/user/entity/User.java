@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.sql.Date;
 import lombok.*;
-import org.springframework.security.core.userdetails.UserDetails;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
 
 @Entity
