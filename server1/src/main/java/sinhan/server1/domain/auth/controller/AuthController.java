@@ -64,8 +64,8 @@ public class AuthController {
     public ApiUtils.ApiResult logout(HttpServletRequest request, HttpServletResponse response) {
         request.getSession().invalidate();
 
-        response.setHeader("Authorization", "");
-        response.setHeader("Refresh-Token", "");
+        response.setHeader("Authorization", null);
+        response.setHeader("Refresh-Token", null);
 
         return success("로그아웃되었습니다.");
     }
