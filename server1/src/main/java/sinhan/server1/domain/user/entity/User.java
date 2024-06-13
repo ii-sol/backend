@@ -1,10 +1,13 @@
 package sinhan.server1.domain.user.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import sinhan.server1.domain.user.dto.UserFindOneResponse;
 
 import java.sql.Date;
-import lombok.*;
-import sinhan.server1.domain.user.dto.UserFindOneResponse;
 
 @Entity
 @Getter
@@ -29,8 +32,7 @@ public class User {
     @Column(name = "profile_id", nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 1")
     private int profileId;
 
-    public User(String phoneNum, String name, Date birthdate, String accountInfo, int role,
-        int profileId) {
+    public User(String phoneNum, String name, Date birthdate, String accountInfo, int role, int profileId) {
         this.phoneNum = phoneNum;
         this.name = name;
         this.birthdate = birthdate;
