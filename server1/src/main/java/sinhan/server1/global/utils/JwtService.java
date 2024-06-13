@@ -2,19 +2,27 @@ package sinhan.server1.global.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.*;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import sinhan.server1.domain.auth.dto.FamilyInfoInterface;
 import sinhan.server1.domain.auth.dto.UserInfoResponse;
+import sinhan.server1.domain.user.entity.User;
+import sinhan.server1.domain.user.repository.UserRepository;
 import sinhan.server1.global.utils.exception.AuthException;
 import sinhan.server1.global.utils.secret.Secret;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class JwtService {
@@ -22,6 +30,8 @@ public class JwtService {
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1800 * 1000; // 30 minutes
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
+    @Autowired
+    private UserRepository userRepository;
 
     private String createToken(Integer role, int userId, Map<String, List<FamilyInfoInterface>> familyInfo, long expirationTime) {
         Date now = new Date();
@@ -86,5 +96,15 @@ public class JwtService {
         List<FamilyInfoInterface> familyInfoResponse = familyInfo.getBody().get("familyInfo", List.class);
 
         return new UserInfoResponse(role, userId, familyInfoResponse);
+    }
+
+    public Authentication getAuthentication(String token) throws AuthException {
+        UserInfoResponse userInfo = getUserInfo();
+        User user = userRepository.findById(userInfo.getUserId())
+                .orElseThrow(() -> new AuthException("USER_NOT_FOUND"));
+
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
+
+        return new UsernamePasswordAuthenticationToken(user, "", Collections.singletonList(authority));
     }
 }
