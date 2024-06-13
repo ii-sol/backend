@@ -17,12 +17,12 @@ import sinhan.server1.domain.auth.dto.UserInfoResponse;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.UserRepository;
 import sinhan.server1.global.utils.exception.AuthException;
-import sinhan.server1.global.security.secret.Secret;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import sinhan.server1.global.utils.secret.Secret;
 
 @Service
 public class JwtService {
@@ -88,7 +88,7 @@ public class JwtService {
     private UserInfoResponse getUserInfoFromClaims(Jws<Claims> familyInfo) throws AuthException {
         String jwtType = familyInfo.getBody().get("typ", String.class);
         if (jwtType == null || (!jwtType.equals("JWT"))) {
-            throw new AuthException("INVALID_JWT");
+            throw new AuthException("NOT_JWT");
         }
 
         int role = familyInfo.getBody().get("role", Integer.class);
@@ -105,6 +105,6 @@ public class JwtService {
 
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
 
-        return new UsernamePasswordAuthenticationToken(user, "", Collections.singletonList(authority));
+        return new UsernamePasswordAuthenticationToken(user, null, Collections.singletonList(authority));
     }
 }
