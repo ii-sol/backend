@@ -18,6 +18,7 @@ import sinhan.server1.domain.auth.service.AuthService;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
 import sinhan.server1.global.utils.ApiUtils;
 import sinhan.server1.global.security.JwtService;
+import sinhan.server1.global.utils.exception.AuthException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) {
+    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
 
         UserFindOneResponse user = authService.login(loginInfoFindRequest);
 

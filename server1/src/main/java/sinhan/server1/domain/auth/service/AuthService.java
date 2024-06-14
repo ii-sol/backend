@@ -15,19 +15,21 @@ import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.FamilyRepository;
 import sinhan.server1.domain.user.repository.ScoreRepository;
 import sinhan.server1.domain.user.repository.UserRepository;
+import sinhan.server1.global.utils.exception.AuthException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class AuthService {
 
+    private final PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
     private ScoreRepository scoreRepository;
     private FamilyRepository familyRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
@@ -45,12 +47,15 @@ public class AuthService {
     }
 
     @Transactional
-    public UserFindOneResponse login(@Valid LoginInfoFindRequest loginInfoFindRequest) {
-        User loginUser = userRepository.findByPhoneNumAndAccountInfo(
-                        loginInfoFindRequest.getPhoneNum(), loginInfoFindRequest.getAccountInfo())
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+    public UserFindOneResponse login(@Valid LoginInfoFindRequest loginInfoFindRequest) throws AuthException {
+        User user = userRepository.findByPhoneNum(loginInfoFindRequest.getPhoneNum())
+                .orElseThrow(() -> new AuthException("INVALID_CREDENTIALS"));
 
-        return loginUser.convertToUserFindOneResponse();
+        if (!passwordEncoder.matches(loginInfoFindRequest.getAccountInfo(), user.getAccountInfo())) {
+            throw new AuthException("INVALID_CREDENTIALS");
+        }
+
+        return user.convertToUserFindOneResponse();
     }
 
     @Transactional
