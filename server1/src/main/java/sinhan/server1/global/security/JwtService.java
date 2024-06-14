@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import sinhan.server1.global.utils.secret.Secret;
+import sinhan.server1.global.security.secret.Secret;
 
 @Service
 public class JwtService {
