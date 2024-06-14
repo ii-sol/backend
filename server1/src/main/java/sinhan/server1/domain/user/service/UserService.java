@@ -37,7 +37,7 @@ public class UserService {
 
         user.setPhoneNum(userUpdateRequest.getPhoneNum());
         user.setName(userUpdateRequest.getName());
-        user.setBirthdate(userUpdateRequest.getBirthdate());
+        user.setBirthDate(userUpdateRequest.getBirthdate());
         user.setProfileId(userUpdateRequest.getProfileId());
 
         User updatedUser = userRepository.save(user);
@@ -50,9 +50,9 @@ public class UserService {
         User familyUser = userRepository.findByPhoneNum(familySaveRequest.getPhoneNum())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
-        if (familySaveRequest.getRole() == familyUser.getRole()) {
-            throw new IllegalArgumentException("임시로 사용하는 에러. 부모자식 관계 불일치");
-        }
+//        if (familySaveRequest.getRole() == familyUser.getRole()) {
+//            throw new IllegalArgumentException("임시로 사용하는 에러. 부모자식 관계 불일치");
+//        }
 
         User meUser = userRepository.findById(familySaveRequest.getId()).get();
 
