@@ -92,11 +92,4 @@ public class GlobalExceptionHandler {
         HttpMediaTypeNotSupportedException error) {
         return error(error.getMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResult<String> handleRuntimeExceptionException(
-            RuntimeException error) {
-        return error(error.getMessage(), HttpStatus.BAD_REQUEST);
-    }
 }
