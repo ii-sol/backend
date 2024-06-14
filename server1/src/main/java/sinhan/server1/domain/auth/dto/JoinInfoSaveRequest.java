@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import sinhan.server1.domain.user.entity.User;
 
 import java.sql.Date;
@@ -32,7 +33,8 @@ public class JoinInfoSaveRequest {
     @JsonProperty(value = "profile_id")
     private Integer profileId;
 
-    public User convertToUser() {
-        return new User(phoneNum, name, birthdate, accountInfo, role, profileId);
+    public User convertToUser(PasswordEncoder passwordEncoder) {
+        String encodedPassword = passwordEncoder.encode(accountInfo);
+        return new User(phoneNum, name, birthdate, encodedPassword, role, profileId);
     }
 }
