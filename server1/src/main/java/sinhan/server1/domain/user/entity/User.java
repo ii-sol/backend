@@ -19,29 +19,28 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "serial_number", nullable = false, unique = true)
+    private Long serialNumber;
     @Column(name = "phone_num", nullable = false, unique = true)
     private String phoneNum;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
-    private Date birthdate;
+    private Date birthDate;
     @Column(name = "account_info", nullable = false)
     private String accountInfo;
-    @Column(nullable = false, columnDefinition = "TINYINT UNSIGNED")
-    private int role;
     @Column(name = "profile_id", nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 1")
     private int profileId;
 
-    public User(String phoneNum, String name, Date birthdate, String accountInfo, int role, int profileId) {
+    public User(String phoneNum, String name, Date birthDate, String accountInfo, int profileId) {
         this.phoneNum = phoneNum;
         this.name = name;
-        this.birthdate = birthdate;
+        this.birthDate = birthDate;
         this.accountInfo = accountInfo;
-        this.role = role;
         this.profileId = profileId;
     }
 
     public UserFindOneResponse convertToUserFindOneResponse() {
-        return new UserFindOneResponse(id, phoneNum, name, birthdate, accountInfo, role, profileId);
+        return new UserFindOneResponse(id, serialNumber, phoneNum, name, birthDate, accountInfo, profileId);
     }
 }

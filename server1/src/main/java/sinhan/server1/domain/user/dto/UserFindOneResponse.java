@@ -17,24 +17,25 @@ import sinhan.server1.domain.user.entity.User;
 public class UserFindOneResponse {
 
     private int id;
+    @JsonProperty(value = "serial_number")
+    private Long serialNumber;
     @JsonProperty(value = "phone_num")
     private String phoneNum;
     private String name;
     private Date birthdate;
     @JsonProperty(value = "account_info")
     private String accountInfo;
-    private int role;
     @JsonProperty(value = "profile_id")
     private int profileId;
 
     public static UserFindOneResponse from(User user) {
         return UserFindOneResponse.builder()
                 .id(user.getId())
+                .serialNumber(user.getSerialNumber())
                 .phoneNum(user.getPhoneNum())
                 .name(user.getName())
-                .birthdate(user.getBirthdate())
+                .birthdate(user.getBirthDate())
                 .accountInfo(user.getAccountInfo())
-                .role(user.getRole())
                 .profileId(user.getProfileId())
                 .build();
     }
