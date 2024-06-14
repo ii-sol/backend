@@ -103,7 +103,7 @@ public class JwtService {
         User user = userRepository.findById(userInfo.getUserId())
                 .orElseThrow(() -> new AuthException("USER_NOT_FOUND"));
 
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_C");
 
         return new UsernamePasswordAuthenticationToken(user, null, Collections.singletonList(authority));
     }
