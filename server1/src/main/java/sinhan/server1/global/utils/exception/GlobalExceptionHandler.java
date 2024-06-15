@@ -1,7 +1,6 @@
 package sinhan.server1.global.utils.exception;
 
-import static sinhan.server1.global.utils.ApiUtils.error;
-
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.lang.UnknownClassException;
 import io.jsonwebtoken.security.WeakKeyException;
@@ -20,6 +19,8 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.NoSuchElementException;
 
+import static sinhan.server1.global.utils.ApiUtils.error;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -33,7 +34,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiResult<String> handleSQLIntegrityConstraintViolationException(
-        SQLIntegrityConstraintViolationException error) {
+            SQLIntegrityConstraintViolationException error) {
         return error(error.getMessage(), HttpStatus.CONFLICT);
     }
 
@@ -52,7 +53,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResult<String> handleMethodArgumentNotValidException(
-        MethodArgumentNotValidException error) {
+            MethodArgumentNotValidException error) {
         return error(error.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
@@ -88,8 +89,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public ApiResult<String> handleHttpMediaTypeNotSupportedException(
-        HttpMediaTypeNotSupportedException error) {
+    public ApiResult<String> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException error) {
         return error(error.getMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResult<String> handleMalformedJwtException(MalformedJwtException error) {
+        return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
