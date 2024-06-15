@@ -16,8 +16,8 @@ import sinhan.server1.domain.auth.dto.JoinInfoSaveRequest;
 import sinhan.server1.domain.auth.dto.LoginInfoFindRequest;
 import sinhan.server1.domain.auth.service.AuthService;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
-import sinhan.server1.global.utils.ApiUtils;
 import sinhan.server1.global.security.JwtService;
+import sinhan.server1.global.utils.ApiUtils;
 import sinhan.server1.global.utils.exception.AuthException;
 
 import java.util.HashMap;
@@ -40,7 +40,9 @@ public class AuthController {
     public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest) {
         UserFindOneResponse user = authService.join(joinInfoSaveRequest);
 
-        return user != null ? success("가입되었습니다.") : error("가입에 실패하였습니다.", HttpStatus.BAD_REQUEST);
+        return user != null
+                ? success("가입되었습니다.")
+                : error("가입에 실패하였습니다.", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/login")
