@@ -46,8 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse httpServletResponse) throws AuthException {
-
+    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
         UserFindOneResponse user = authService.login(loginInfoFindRequest);
         List<FamilyInfoResponse> myFamilyInfo = authService.getFamilyInfo(user.getSerialNumber());
         setFamilyName(myFamilyInfo);
@@ -58,7 +57,7 @@ public class AuthController {
         familyInfo.get("familyInfo").forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
         JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), familyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
-        jwtService.sendJwtToken(httpServletResponse, jwtTokenResponse);
+        jwtService.sendJwtToken(response, jwtTokenResponse);
 
         return success("로그인되었습니다.");
     }
@@ -76,5 +75,28 @@ public class AuthController {
         jwtService.sendJwtToken(response, new JwtTokenResponse());
 
         return success("로그아웃되었습니다.");
+    }
+
+    @PostMapping("/token")
+    public ApiUtils.ApiResult refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = jwtService.getRefreshToken();
+        if (refreshToken == null) {
+            return error("Refresh token not found", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            long sn = jwtService.getUserInfo(refreshToken).getSn();
+            List<FamilyInfoResponse> myFamilyInfo = authService.getFamilyInfo(sn);
+            setFamilyName(myFamilyInfo);
+
+            Map<String, List<FamilyInfoResponse>> familyInfo = new HashMap<>();
+            familyInfo.put("familyInfo", myFamilyInfo);
+
+            String newAccessToken = jwtService.createAccessToken(sn, familyInfo);
+            jwtService.sendAccessToken(response, newAccessToken);
+            return success("Access token refreshed successfully.");
+        } catch (AuthException e) {
+            return error(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
 }
