@@ -94,7 +94,7 @@ public class JwtService {
         return new UserInfoResponse(sn, familyInfo);
     }
 
-    public Authentication getAuthentication(String token) throws AuthException {
+    public Authentication getAuthentication() throws AuthException {
         UserInfoResponse userInfo = getUserInfo();
         User user = userRepository.findBySerialNum(userInfo.getSn())
                 .orElseThrow(() -> new AuthException("USER_NOT_FOUND"));
@@ -105,11 +105,11 @@ public class JwtService {
     }
 
     public void sendJwtToken(HttpServletResponse httpServletResponse, JwtTokenResponse jwtTokenResponse) {
-        httpServletResponse.setHeader("Authorization", jwtTokenResponse.getAccessToken());
+        httpServletResponse.setHeader("Authorization", "Bearer " + jwtTokenResponse.getAccessToken());
         httpServletResponse.setHeader("Refresh-Token", jwtTokenResponse.getRefreshToken());
     }
 
     public void sendAccessToken(HttpServletResponse httpServletResponse, String accessToken) {
-        httpServletResponse.setHeader("Authorization", accessToken);
+        httpServletResponse.setHeader("Authorization", "Bearer " + accessToken);
     }
 }
