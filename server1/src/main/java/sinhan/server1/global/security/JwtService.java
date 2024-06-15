@@ -64,10 +64,9 @@ public class JwtService {
         return request.getHeader("Refresh-Token");
     }
 
-    public UserInfoResponse getUserInfo() throws AuthException {
+    public UserInfoResponse getUserInfo(String token) throws AuthException {
         // 1. JWT 추출
-        String accessToken = getAccessToken();
-        if (accessToken == null || accessToken.isEmpty()) {
+        if (token == null || token.isEmpty()) {
             throw new AuthException("EMPTY_JWT");
         }
 
@@ -76,7 +75,7 @@ public class JwtService {
         claims = Jwts.parser()
                 .verifyWith(Secret.getJwtKey())
                 .build()
-                .parseSignedClaims(accessToken);
+                .parseSignedClaims(token);
 
         // 3. userInfo 추출
         return getUserInfoFromClaims(claims);
@@ -94,8 +93,8 @@ public class JwtService {
         return new UserInfoResponse(sn, familyInfo);
     }
 
-    public Authentication getAuthentication() throws AuthException {
-        UserInfoResponse userInfo = getUserInfo();
+    public Authentication getAuthentication(String token) throws AuthException {
+        UserInfoResponse userInfo = getUserInfo(token);
         User user = userRepository.findBySerialNum(userInfo.getSn())
                 .orElseThrow(() -> new AuthException("USER_NOT_FOUND"));
 

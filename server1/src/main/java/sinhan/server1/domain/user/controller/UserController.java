@@ -33,7 +33,7 @@ public class UserController {
 
     @GetMapping("/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn) throws AuthException {
-        UserInfoResponse userInfo = jwtService.getUserInfo();
+        UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
         if (userInfo.getSn() != sn) {
             List<FamilyInfoResponse> familyInfo = userInfo.getFamilyInfo();
 
@@ -53,7 +53,7 @@ public class UserController {
 
     @PutMapping("")
     public ApiUtils.ApiResult updateUser(@RequestBody UserUpdateRequest userUpdateRequest) throws AuthException {
-        UserInfoResponse userInfo = jwtService.getUserInfo();
+        UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         userUpdateRequest.setSerialNum(userInfo.getSn());
         UserFindOneResponse user = userService.updateUser(userUpdateRequest);
@@ -62,7 +62,7 @@ public class UserController {
 
     @PostMapping("")
     public ApiUtils.ApiResult connectFamily(@RequestBody FamilySaveRequest familySaveRequest) throws AuthException {
-        UserInfoResponse userInfo = jwtService.getUserInfo();
+        UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         familySaveRequest.setUserSn(userInfo.getSn());
 
@@ -83,7 +83,7 @@ public class UserController {
 
     @DeleteMapping("/{family-sn}")
     public ApiUtils.ApiResult disconnectFamily(@PathVariable int familySn) throws AuthException {
-        UserInfoResponse userInfo = jwtService.getUserInfo();
+        UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         if (!isFamilyUser(familySn)) {
             throw new NoSuchElementException("부모 사용자가 존재하지 않습니다.");
