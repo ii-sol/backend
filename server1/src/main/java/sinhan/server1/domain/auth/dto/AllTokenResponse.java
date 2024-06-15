@@ -1,6 +1,5 @@
 package sinhan.server1.domain.auth.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,4 +9,8 @@ public class AllTokenResponse {
 
     private String accessToken;
     private String refreshToken;
+
+    public AllTokenResponse(String accessToken) {
+        this.accessToken = accessToken;
+    }
 }
