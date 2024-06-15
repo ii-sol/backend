@@ -7,15 +7,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import sinhan.server1.domain.auth.dto.AllTokenResponse;
 import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
+import sinhan.server1.domain.auth.dto.JwtTokenResponse;
 import sinhan.server1.domain.auth.dto.UserInfoResponse;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.UserRepository;
@@ -105,10 +104,12 @@ public class JwtService {
         return new UsernamePasswordAuthenticationToken(user, null, Collections.singletonList(authority));
     }
 
-    public void sendJwtToken(HttpServletResponse httpServletResponse, AllTokenResponse allTokenResponse) {
-        httpServletResponse.setHeader("Authorization", allTokenResponse.getAccessToken());
-        if(allTokenResponse.getRefreshToken() != null){
-            httpServletResponse.setHeader("Refresh-Token", allTokenResponse.getRefreshToken());
-        }
+    public void sendJwtToken(HttpServletResponse httpServletResponse, JwtTokenResponse jwtTokenResponse) {
+        httpServletResponse.setHeader("Authorization", jwtTokenResponse.getAccessToken());
+        httpServletResponse.setHeader("Refresh-Token", jwtTokenResponse.getRefreshToken());
+    }
+
+    public void sendAccessToken(HttpServletResponse httpServletResponse, String accessToken) {
+        httpServletResponse.setHeader("Authorization", accessToken);
     }
 }
