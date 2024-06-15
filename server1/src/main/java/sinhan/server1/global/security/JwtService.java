@@ -21,10 +21,7 @@ import sinhan.server1.domain.user.repository.UserRepository;
 import sinhan.server1.global.security.secret.Secret;
 import sinhan.server1.global.utils.exception.AuthException;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -38,6 +35,7 @@ public class JwtService {
     private String createToken(long sn, Map<String, List<FamilyInfoResponse>> familyInfo, long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
+                .setHeaderParam("typ", TOKEN_TYPE)
                 .claim("sn", sn)
                 .claim("familyInfo", familyInfo)
                 .issuedAt(now)
@@ -70,6 +68,10 @@ public class JwtService {
             throw new AuthException("EMPTY_JWT");
         }
 
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7).trim();
+        }
+
         // 2. JWT parsing
         Jws<Claims> claims;
         claims = Jwts.parser()
@@ -82,15 +84,18 @@ public class JwtService {
     }
 
     private UserInfoResponse getUserInfoFromClaims(Jws<Claims> claims) throws AuthException {
-        String jwtType = claims.getBody().get("typ", String.class);
-        if (jwtType == null || (!jwtType.equals("JWT"))) {
+        String jwtType = claims.getHeader().getType();
+        if (jwtType == null || (!jwtType.equals(TOKEN_TYPE))) {
             throw new AuthException("NOT_JWT");
         }
 
-        long sn = claims.getBody().get("sn", Long.class);
-        List<FamilyInfoResponse> familyInfo = claims.getBody().get("familyInfo", List.class);
+        long sn = claims.getPayload().get("sn", Long.class);
+        LinkedHashMap<String, List<FamilyInfoResponse>> familyInfo = (LinkedHashMap<String, List<FamilyInfoResponse>>) claims.getPayload().get("familyInfo");
+        List<FamilyInfoResponse> familyInfoResponseList = familyInfo.get("familyInfo");
 
-        return new UserInfoResponse(sn, familyInfo);
+//        return new UserInfoResponse(sn, familyInfo);
+//        return null;
+        return new UserInfoResponse(sn, familyInfoResponseList);
     }
 
     public Authentication getAuthentication(String token) throws AuthException {

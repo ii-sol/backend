@@ -1,5 +1,6 @@
 package sinhan.server1.domain.user.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class UserController {
     private JwtService jwtService;
 
     @GetMapping("/{sn}")
-    public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn) throws AuthException {
+    public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn) throws AuthException, JsonProcessingException {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
         if (userInfo.getSn() != sn) {
             List<FamilyInfoResponse> familyInfo = userInfo.getFamilyInfo();
@@ -52,7 +53,7 @@ public class UserController {
     }
 
     @PutMapping("")
-    public ApiUtils.ApiResult updateUser(@RequestBody UserUpdateRequest userUpdateRequest) throws AuthException {
+    public ApiUtils.ApiResult updateUser(@RequestBody UserUpdateRequest userUpdateRequest) throws AuthException, JsonProcessingException {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         userUpdateRequest.setSerialNum(userInfo.getSn());
@@ -61,7 +62,7 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ApiUtils.ApiResult connectFamily(@RequestBody FamilySaveRequest familySaveRequest) throws AuthException {
+    public ApiUtils.ApiResult connectFamily(@RequestBody FamilySaveRequest familySaveRequest) throws AuthException, JsonProcessingException {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         familySaveRequest.setUserSn(userInfo.getSn());
@@ -82,7 +83,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{family-sn}")
-    public ApiUtils.ApiResult disconnectFamily(@PathVariable int familySn) throws AuthException {
+    public ApiUtils.ApiResult disconnectFamily(@PathVariable int familySn) throws AuthException, JsonProcessingException {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         if (!isFamilyUser(familySn)) {

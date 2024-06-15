@@ -1,15 +1,14 @@
 package sinhan.server1.domain.auth.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
 import sinhan.server1.domain.auth.dto.JoinInfoSaveRequest;
 import sinhan.server1.domain.auth.dto.JwtTokenResponse;
@@ -36,6 +35,11 @@ public class AuthController {
     private AuthService authService;
     private JwtService jwtService;
 
+    @GetMapping("/main")
+    public ApiUtils.ApiResult main(){
+        return success("초기 화면");
+    }
+
     @PostMapping("/join")
     public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest) {
         UserFindOneResponse user = authService.join(joinInfoSaveRequest);
@@ -46,7 +50,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
+    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException, JsonProcessingException {
         UserFindOneResponse user = authService.login(loginInfoFindRequest);
         List<FamilyInfoResponse> myFamilyInfo = authService.getFamilyInfo(user.getSerialNumber());
         setFamilyName(myFamilyInfo);
@@ -68,11 +72,11 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ApiUtils.ApiResult logout(HttpServletRequest request, HttpServletResponse response) {
-        request.getSession().invalidate();
+//        request.getSession().invalidate();
 
 //        response.setHeader("Authorization", null);
 //        response.setHeader("Refresh-Token", null);
-        jwtService.sendJwtToken(response, new JwtTokenResponse());
+//        jwtService.sendJwtToken(response, new JwtTokenResponse());
 
         return success("로그아웃되었습니다.");
     }
