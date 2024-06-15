@@ -30,7 +30,8 @@ public class User {
     @Column(name = "profile_id", nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 1")
     private int profileId;
 
-    public User(String phoneNum, String name, Date birthDate, String accountInfo, int profileId) {
+    public User(long serialNum, String phoneNum, String name, Date birthDate, String accountInfo, int profileId) {
+        this.serialNum = serialNum;
         this.phoneNum = phoneNum;
         this.name = name;
         this.birthDate = birthDate;

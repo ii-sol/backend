@@ -19,7 +19,7 @@ public class JoinInfoSaveRequest {
     private String phoneNum;
     @NotBlank(message = "이름을 입력해주세요.")
     private String name;
-    @JsonProperty(value = "account_info")
+    @JsonProperty(value = "birth_date")
     @NotNull(message = "생일을 입력해주세요.")
     @Past(message = "생일은 현재 날짜보다 이전이어야 합니다.")
     private Date birthDate;
@@ -30,8 +30,8 @@ public class JoinInfoSaveRequest {
     @JsonProperty(value = "profile_id")
     private Integer profileId;
 
-    public User convertToUser(PasswordEncoder passwordEncoder) {
+    public User convertToUser(long serialNum, PasswordEncoder passwordEncoder) {
         String encodedPassword = passwordEncoder.encode(accountInfo);
-        return new User(phoneNum, name, birthDate, encodedPassword, profileId);
+        return new User(serialNum, phoneNum, name, birthDate, encodedPassword, profileId);
     }
 }

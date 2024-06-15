@@ -16,7 +16,6 @@ import sinhan.server1.domain.user.repository.UserRepository;
 import sinhan.server1.global.utils.exception.AuthException;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,11 +29,11 @@ public class AuthService {
 
     @Transactional
     public UserFindOneResponse join(JoinInfoSaveRequest joinInfoSaveRequest) {
-        userRepository.save(joinInfoSaveRequest.convertToUser(passwordEncoder));
-        User joinUser = userRepository.findByPhoneNum(joinInfoSaveRequest.getPhoneNum())
-                .orElseThrow(() -> new NoSuchElementException("가입에 실패하였습니다."));
+        long serialNum = userRepository.generateSerialNum();
+        log.info("Generated serial number={}", serialNum);
+        User user = userRepository.save(joinInfoSaveRequest.convertToUser(serialNum, passwordEncoder));
 
-        return joinUser.convertToUserFindOneResponse();
+        return user.convertToUserFindOneResponse();
     }
 
     @Transactional
