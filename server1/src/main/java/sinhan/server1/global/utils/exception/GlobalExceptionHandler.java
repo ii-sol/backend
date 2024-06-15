@@ -1,10 +1,12 @@
 package sinhan.server1.global.utils.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.lang.UnknownClassException;
 import io.jsonwebtoken.security.WeakKeyException;
+import jakarta.servlet.ServletException;
 import jakarta.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConverterNotFoundException;
@@ -106,4 +108,15 @@ public class GlobalExceptionHandler {
         return error(error.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResult<String> handleJsonProcessingException(JsonProcessingException error) {
+        return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResult<String> handleServletException(ServletException error) {
+        return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
