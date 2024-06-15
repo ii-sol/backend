@@ -8,8 +8,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AllTokenResponse {
 
-    @NotBlank(message = "refreshToken을 입력해주세요.")
     private String accessToken;
-    @NotBlank(message = "refreshToken을 입력해주세요.")
     private String refreshToken;
 }

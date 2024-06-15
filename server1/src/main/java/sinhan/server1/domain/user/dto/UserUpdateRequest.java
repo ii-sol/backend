@@ -3,14 +3,14 @@ package sinhan.server1.domain.user.dto;
 import java.sql.Date;
 import lombok.*;
 
+@RequiredArgsConstructor
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class UserUpdateRequest {
 
-    private int id;
-    private String phoneNum;
-    private String name;
-    private Date birthdate;
-    private int profileId;
+    private long serialNum;
+    private final String phoneNum;
+    private final String name;
+    private final Date birthdate;
+    private final int profileId;
 }

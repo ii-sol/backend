@@ -8,7 +8,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserInfoResponse {
 
-    private int role;
-    private int userId;
-    private List<FamilyInfoInterface> familyInfo;
+    private long sn;
+    private List<FamilyInfoResponse> familyInfo;
 }

@@ -2,17 +2,11 @@ package sinhan.server1.domain.user.dto;
 
 import lombok.*;
 
-@NoArgsConstructor
-@Getter
+@RequiredArgsConstructor
 @Setter
-@ToString
+@Getter
 public class FamilySaveRequest {
 
-    private int id; // 자기 자신
-    private int role; // 자기 자신
-    private String phoneNum;
-
-    public FamilySaveRequest(String phoneNum) {
-        this.phoneNum = phoneNum;
-    }
+    private long userSn;
+    private final long familySn;
 }

@@ -1,10 +1,7 @@
 package sinhan.server1.domain.user.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
 
 import java.sql.Date;
@@ -13,14 +10,15 @@ import java.sql.Date;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @NoArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "serial_number", nullable = false, unique = true)
-    private Long serialNumber;
+    @Column(name = "serial_num", nullable = false, unique = true)
+    private long serialNum;
     @Column(name = "phone_num", nullable = false, unique = true)
     private String phoneNum;
     @Column(nullable = false)
@@ -41,6 +39,6 @@ public class User {
     }
 
     public UserFindOneResponse convertToUserFindOneResponse() {
-        return new UserFindOneResponse(id, serialNumber, phoneNum, name, birthDate, accountInfo, profileId);
+        return new UserFindOneResponse(id, serialNum, phoneNum, name, birthDate, profileId);
     }
 }

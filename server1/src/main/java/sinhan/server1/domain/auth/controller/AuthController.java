@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sinhan.server1.domain.auth.dto.AllTokenResponse;
-import sinhan.server1.domain.auth.dto.FamilyInfoInterface;
+import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
 import sinhan.server1.domain.auth.dto.JoinInfoSaveRequest;
 import sinhan.server1.domain.auth.dto.LoginInfoFindRequest;
 import sinhan.server1.domain.auth.service.AuthService;
@@ -44,21 +44,27 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException {
+    public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse httpServletResponse) throws AuthException {
 
         UserFindOneResponse user = authService.login(loginInfoFindRequest);
+        List<FamilyInfoResponse> myFamilyInfo = authService.getFamilyInfo(user.getSerialNumber());
+        setFamilyName(myFamilyInfo);
 
-        Map<String, List<FamilyInfoInterface>> familyInfo = new HashMap<>();
-        log.info("userId={}", user.getId());
-        familyInfo.put("familyInfo", authService.getFamilyInfo(user.getId()));
-        familyInfo.get("familyInfo").forEach(info -> log.info("Family Info - ID: {}, Name: {}", info.getId(), info.getName()));
+        Map<String, List<FamilyInfoResponse>> familyInfo = new HashMap<>();
+        log.info("userSn={}", user.getSerialNumber());
+        familyInfo.put("familyInfo", myFamilyInfo);
+        familyInfo.get("familyInfo").forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
-        AllTokenResponse allTokenResponse = new AllTokenResponse(jwtService.createAccessToken(user.getRole(), user.getId(), familyInfo), jwtService.createRefreshToken(user.getId()));
+        AllTokenResponse allTokenResponse = new AllTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), familyInfo), jwtService.createRefreshToken(user.getId()));
 
-        response.setHeader("Authorization", "Bearer " + allTokenResponse.getAccessToken());
-        response.setHeader("Refresh-Token", allTokenResponse.getRefreshToken());
+        httpServletResponse.setHeader("Authorization", "Bearer " + allTokenResponse.getAccessToken());
+        httpServletResponse.setHeader("Refresh-Token", allTokenResponse.getRefreshToken());
 
         return success("로그인되었습니다.");
+    }
+
+    private void setFamilyName(List<FamilyInfoResponse> myFamilyInfo) {
+        // TODO: 부모 이름 가져오기 이벤트 등록 - 콜백
     }
 
     @PostMapping("/logout")

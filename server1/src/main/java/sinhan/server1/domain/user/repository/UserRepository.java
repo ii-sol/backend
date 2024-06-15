@@ -14,5 +14,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u.phoneNum FROM User u")
     List<String> findAllPhones();
 
-    Optional<User> findByPhoneNumAndAccountInfo(String phoneNum, String accountInfo);
+    Optional<User> findBySerialNum(long userSn);
 }

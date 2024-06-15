@@ -12,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import sinhan.server1.domain.auth.dto.FamilyInfoInterface;
+import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
 import sinhan.server1.domain.auth.dto.UserInfoResponse;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.UserRepository;
@@ -33,11 +33,10 @@ public class JwtService {
     @Autowired
     private UserRepository userRepository;
 
-    private String createToken(Integer role, int userId, Map<String, List<FamilyInfoInterface>> familyInfo, long expirationTime) {
+    private String createToken(long sn, Map<String, List<FamilyInfoResponse>> familyInfo, long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
-                .claim("role", role)
-                .claim("userId", userId)
+                .claim("sn", sn)
                 .claim("familyInfo", familyInfo)
                 .issuedAt(now)
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
@@ -45,12 +44,12 @@ public class JwtService {
                 .compact();
     }
 
-    public String createAccessToken(int role, int userId, Map<String, List<FamilyInfoInterface>> familyInfo) {
-        return createToken(role, userId, familyInfo, ACCESS_TOKEN_EXPIRATION_TIME);
+    public String createAccessToken(long serialNumber, Map<String, List<FamilyInfoResponse>> familyInfo) {
+        return createToken(serialNumber, familyInfo, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
-    public String createRefreshToken(int userId) {
-        return createToken(null, userId, null, REFRESH_TOKEN_EXPIRATION_TIME);
+    public String createRefreshToken(long serialNumber) {
+        return createToken(serialNumber, null, REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
     public String getAccessToken() {
@@ -85,22 +84,21 @@ public class JwtService {
         return getUserInfoFromClaims(claims);
     }
 
-    private UserInfoResponse getUserInfoFromClaims(Jws<Claims> familyInfo) throws AuthException {
-        String jwtType = familyInfo.getBody().get("typ", String.class);
+    private UserInfoResponse getUserInfoFromClaims(Jws<Claims> claims) throws AuthException {
+        String jwtType = claims.getBody().get("typ", String.class);
         if (jwtType == null || (!jwtType.equals("JWT"))) {
             throw new AuthException("NOT_JWT");
         }
 
-        int role = familyInfo.getBody().get("role", Integer.class);
-        int userId = familyInfo.getBody().get("userId", Integer.class);
-        List<FamilyInfoInterface> familyInfoResponse = familyInfo.getBody().get("familyInfo", List.class);
+        long sn = claims.getBody().get("sn", Long.class);
+        List<FamilyInfoResponse> familyInfo = claims.getBody().get("familyInfo", List.class);
 
-        return new UserInfoResponse(role, userId, familyInfoResponse);
+        return new UserInfoResponse(sn, familyInfo);
     }
 
     public Authentication getAuthentication(String token) throws AuthException {
         UserInfoResponse userInfo = getUserInfo();
-        User user = userRepository.findById(userInfo.getUserId())
+        User user = userRepository.findBySerialNum(userInfo.getSn())
                 .orElseThrow(() -> new AuthException("USER_NOT_FOUND"));
 
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_C");
