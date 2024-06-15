@@ -115,8 +115,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResult<String> handleServletException(ServletException error) {
-        return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return error(error.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
