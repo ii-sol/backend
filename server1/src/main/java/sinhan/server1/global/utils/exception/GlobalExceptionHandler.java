@@ -1,5 +1,6 @@
 package sinhan.server1.global.utils.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.lang.UnknownClassException;
@@ -94,8 +95,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiResult<String> handleMalformedJwtException(MalformedJwtException error) {
-        return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return error(error.getMessage(), HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiResult<String> handleExpiredJwtException(ExpiredJwtException error) {
+        return error(error.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
 }
