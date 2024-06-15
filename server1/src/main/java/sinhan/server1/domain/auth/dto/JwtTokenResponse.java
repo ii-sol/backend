@@ -5,12 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AllTokenResponse {
+public class JwtTokenResponse {
 
     private String accessToken;
     private String refreshToken;
-
-    public AllTokenResponse(String accessToken) {
-        this.accessToken = accessToken;
-    }
 }
