@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FamilyInfoResponse {
+public class FamilyInfoResponse{
 
     long sn;
     String name;

@@ -18,16 +18,16 @@ public class Family {
     private int id;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_sn", referencedColumnName = "serial_num", nullable = false, columnDefinition = "BIGINT UNSIGNED")
-    private User userSn;
+    private User user;
     @Column(name = "family_sn", nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private long familySn;
 
-    public Family(User userSn, long familySn) {
-        this.userSn = userSn;
+    public Family(User user, long familySn) {
+        this.user = user;
         this.familySn = familySn;
     }
 
     public FamilyFindOneResponse convertToFamilyFindOneResponse() {
-        return new FamilyFindOneResponse(id, userSn.getSerialNum(), familySn);
+        return new FamilyFindOneResponse(id, user.getSerialNum(), familySn);
     }
 }

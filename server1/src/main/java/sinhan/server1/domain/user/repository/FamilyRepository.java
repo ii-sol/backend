@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import sinhan.server1.domain.auth.dto.FamilyInfoInterface;
 import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
 import sinhan.server1.domain.user.entity.Family;
 import sinhan.server1.domain.user.entity.User;
@@ -20,11 +19,11 @@ public interface FamilyRepository extends JpaRepository<Family, Integer> {
     @Query("DELETE FROM Family f WHERE f.id = :id")
     void delete(@Param("id") int id);
 
-    @Query("SELECT f.family_sn AS sn" +
+    @Query("SELECT f.familySn AS sn " +
             "FROM Family f " +
-            "WHERE f.user_sn = :sn " +
+            "WHERE f.user.serialNum = :sn " +
             "ORDER BY sn")
     List<FamilyInfoResponse> findMyFamilyInfo(@Param("sn") long sn);
 
-    Optional<Family> findByUserSnAndFamilySn(User user, long familySn);
+    Optional<Family> findByUserSerialNumAndFamilySn(User user, long familySn);
 }

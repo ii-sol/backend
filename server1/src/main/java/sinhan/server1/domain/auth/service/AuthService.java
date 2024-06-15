@@ -17,6 +17,7 @@ import sinhan.server1.global.utils.exception.AuthException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -48,8 +49,10 @@ public class AuthService {
         return user.convertToUserFindOneResponse();
     }
 
-    @Transactional
+    @Transactional()
     public List<FamilyInfoResponse> getFamilyInfo(long sn) {
-        return familyRepository.findMyFamilyInfo(sn);
+        return familyRepository.findMyFamilyInfo(sn).stream()
+                .map(fi -> new FamilyInfoResponse(fi.getSn()))
+                .collect(Collectors.toList());
     }
 }

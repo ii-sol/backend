@@ -55,7 +55,8 @@ public class UserService {
     public boolean disconnectFamily(long sn, long familySn) {
         User user = findUser(sn);
 
-        Family family = familyRepository.findByUserSnAndFamilySn(user, familySn)
+        Family family = familyRepository
+                .findByUserSerialNumAndFamilySn(user, familySn)
                 .orElseThrow(() -> new NoSuchElementException("가족 관계가 존재하지 않습니다."));
 
         familyRepository.delete(family.getId());
