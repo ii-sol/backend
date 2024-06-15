@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sinhan.server1.domain.auth.dto.AllTokenResponse;
 import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
 import sinhan.server1.domain.auth.dto.JoinInfoSaveRequest;
+import sinhan.server1.domain.auth.dto.JwtTokenResponse;
 import sinhan.server1.domain.auth.dto.LoginInfoFindRequest;
 import sinhan.server1.domain.auth.service.AuthService;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;
@@ -57,8 +57,8 @@ public class AuthController {
         familyInfo.put("familyInfo", myFamilyInfo);
         familyInfo.get("familyInfo").forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
-        AllTokenResponse allTokenResponse = new AllTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), familyInfo), jwtService.createRefreshToken(user.getId()));
-        jwtService.sendJwtToken(httpServletResponse, allTokenResponse);
+        JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), familyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
+        jwtService.sendJwtToken(httpServletResponse, jwtTokenResponse);
 
         return success("로그인되었습니다.");
     }
@@ -71,8 +71,9 @@ public class AuthController {
     public ApiUtils.ApiResult logout(HttpServletRequest request, HttpServletResponse response) {
         request.getSession().invalidate();
 
-        response.setHeader("Authorization", null);
-        response.setHeader("Refresh-Token", null);
+//        response.setHeader("Authorization", null);
+//        response.setHeader("Refresh-Token", null);
+        jwtService.sendJwtToken(response, new JwtTokenResponse());
 
         return success("로그아웃되었습니다.");
     }
