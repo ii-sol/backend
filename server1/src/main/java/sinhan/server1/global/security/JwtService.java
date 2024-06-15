@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,25 +14,26 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import sinhan.server1.domain.auth.dto.AllTokenResponse;
 import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
 import sinhan.server1.domain.auth.dto.UserInfoResponse;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.UserRepository;
+import sinhan.server1.global.security.secret.Secret;
 import sinhan.server1.global.utils.exception.AuthException;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import sinhan.server1.global.security.secret.Secret;
 
 @Service
+@AllArgsConstructor
 public class JwtService {
 
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1800 * 1000; // 30 minutes
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
-    @Autowired
     private UserRepository userRepository;
 
     private String createToken(long sn, Map<String, List<FamilyInfoResponse>> familyInfo, long expirationTime) {
@@ -71,14 +74,10 @@ public class JwtService {
 
         // 2. JWT parsing
         Jws<Claims> claims;
-        try {
-            claims = Jwts.parser()
-                    .verifyWith(Secret.getJwtKey())
-                    .build()
-                    .parseSignedClaims(accessToken);
-        } catch (Exception e) {
-            throw new AuthException("INVALID_JWT");
-        }
+        claims = Jwts.parser()
+                .verifyWith(Secret.getJwtKey())
+                .build()
+                .parseSignedClaims(accessToken);
 
         // 3. userInfo 추출
         return getUserInfoFromClaims(claims);
@@ -104,5 +103,12 @@ public class JwtService {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_C");
 
         return new UsernamePasswordAuthenticationToken(user, null, Collections.singletonList(authority));
+    }
+
+    public void sendJwtToken(HttpServletResponse httpServletResponse, AllTokenResponse allTokenResponse) {
+        httpServletResponse.setHeader("Authorization", allTokenResponse.getAccessToken());
+        if(allTokenResponse.getRefreshToken() != null){
+            httpServletResponse.setHeader("Refresh-Token", allTokenResponse.getRefreshToken());
+        }
     }
 }
