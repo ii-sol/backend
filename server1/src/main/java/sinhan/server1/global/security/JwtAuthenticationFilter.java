@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         if (token != null) {
             try {
-                Authentication authentication = jwtService.getAuthentication(token);
+                Authentication authentication = jwtService.getAuthentication();
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (AuthException e) {
                 throw new RuntimeException(e);
