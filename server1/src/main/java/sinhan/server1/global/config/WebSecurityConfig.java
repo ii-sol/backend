@@ -37,8 +37,10 @@ public class WebSecurityConfig {
                         .permitAll() // 모든 사용자에게 로그아웃 허용
                 );
 
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtService),
-                UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(
+                new JwtAuthenticationFilter(jwtService),
+                UsernamePasswordAuthenticationFilter.class
+        );
 
         return http.build();
     }
