@@ -58,9 +58,7 @@ public class AuthController {
         familyInfo.get("familyInfo").forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
         AllTokenResponse allTokenResponse = new AllTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), familyInfo), jwtService.createRefreshToken(user.getId()));
-
-        httpServletResponse.setHeader("Authorization", "Bearer " + allTokenResponse.getAccessToken());
-        httpServletResponse.setHeader("Refresh-Token", allTokenResponse.getRefreshToken());
+        jwtService.sendJwtToken(httpServletResponse, allTokenResponse);
 
         return success("로그인되었습니다.");
     }
