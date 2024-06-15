@@ -24,7 +24,7 @@ public interface FamilyRepository extends JpaRepository<Family, Integer> {
             "FROM Family f " +
             "WHERE f.user_sn = :sn " +
             "ORDER BY sn")
-    List<FamilyInfoInterface> findMyFamilyInfo(@Param("sn") long sn);
+    List<FamilyInfoResponse> findMyFamilyInfo(@Param("sn") long sn);
 
     Optional<Family> findByUserSnAndFamilySn(User user, long familySn);
 }
