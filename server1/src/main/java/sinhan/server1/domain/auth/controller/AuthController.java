@@ -18,9 +18,7 @@ import sinhan.server1.global.security.JwtService;
 import sinhan.server1.global.utils.ApiUtils;
 import sinhan.server1.global.utils.exception.AuthException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static sinhan.server1.global.utils.ApiUtils.error;
 import static sinhan.server1.global.utils.ApiUtils.success;
@@ -35,7 +33,7 @@ public class AuthController {
     private JwtService jwtService;
 
     @GetMapping("/main")
-    public ApiUtils.ApiResult main(){
+    public ApiUtils.ApiResult main() {
         return success("초기 화면");
     }
 
@@ -43,9 +41,7 @@ public class AuthController {
     public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest) {
         UserFindOneResponse user = authService.join(joinInfoSaveRequest);
 
-        return user != null
-                ? success("가입되었습니다.")
-                : error("가입에 실패하였습니다.", HttpStatus.BAD_REQUEST);
+        return user != null ? success("가입되었습니다.") : error("가입에 실패하였습니다.", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/login")
