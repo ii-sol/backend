@@ -54,12 +54,9 @@ public class AuthController {
         List<FamilyInfoResponse> myFamilyInfo = authService.getFamilyInfo(user.getSerialNumber());
         setFamilyName(myFamilyInfo);
 
-        Map<String, List<FamilyInfoResponse>> familyInfo = new HashMap<>();
-        log.info("userSn={}", user.getSerialNumber());
-        familyInfo.put("familyInfo", myFamilyInfo);
-        familyInfo.get("familyInfo").forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
+        myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
-        JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), familyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
+        JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
         jwtService.sendJwtToken(response, jwtTokenResponse);
 
         return success("로그인되었습니다.");
@@ -78,7 +75,7 @@ public class AuthController {
     public ApiUtils.ApiResult refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = jwtService.getRefreshToken();
         if (refreshToken == null) {
-            return error("Refresh token not found", HttpStatus.BAD_REQUEST);
+            return error("Refresh-Token을 찾지 못했습니다.", HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -86,12 +83,9 @@ public class AuthController {
             List<FamilyInfoResponse> myFamilyInfo = authService.getFamilyInfo(sn);
             setFamilyName(myFamilyInfo);
 
-            Map<String, List<FamilyInfoResponse>> familyInfo = new HashMap<>();
-            familyInfo.put("familyInfo", myFamilyInfo);
-
-            String newAccessToken = jwtService.createAccessToken(sn, familyInfo);
+            String newAccessToken = jwtService.createAccessToken(sn, myFamilyInfo);
             jwtService.sendAccessToken(response, newAccessToken);
-            return success("Access token refreshed successfully.");
+            return success("Authorization이 새로 발급되었습니다.");
         } catch (AuthException e) {
             return error(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }

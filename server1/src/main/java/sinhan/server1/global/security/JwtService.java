@@ -23,7 +23,10 @@ import sinhan.server1.domain.user.repository.UserRepository;
 import sinhan.server1.global.security.secret.Secret;
 import sinhan.server1.global.utils.exception.AuthException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -35,7 +38,7 @@ public class JwtService {
     private UserRepository userRepository;
     private ObjectMapper objectMapper;
 
-    private String createToken(long sn, Map<String, List<FamilyInfoResponse>> familyInfo, long expirationTime) {
+    private String createToken(long sn, List<FamilyInfoResponse> familyInfo, long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
                 .header()
@@ -50,12 +53,12 @@ public class JwtService {
                 .compact();
     }
 
-    public String createAccessToken(long serialNumber, Map<String, List<FamilyInfoResponse>> familyInfo) {
+    public String createAccessToken(long serialNumber, List<FamilyInfoResponse> familyInfo) {
         return createToken(serialNumber, familyInfo, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
     public String createRefreshToken(long serialNumber) {
-        return createToken(serialNumber, new HashMap<>(), REFRESH_TOKEN_EXPIRATION_TIME);
+        return createToken(serialNumber, new ArrayList<>(), REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
     public String getAccessToken() {
@@ -96,13 +99,19 @@ public class JwtService {
         }
 
         long sn = claims.getPayload().get("sn", Long.class);
+//        Map<String, List<FamilyInfoResponse>> familyInfo = claims.getPayload().get("familyInfo", Map.class);
+//        List<FamilyInfoResponse> familyInfoResponseList = familyInfo.get("familyInfo");
 
-        TypeReference<Map<String, List<FamilyInfoResponse>>> typeFamilyInfo = new TypeReference<Map<String, List<FamilyInfoResponse>>>() {
+//        TypeReference<Map<String, List<FamilyInfoResponse>>> typeFamilyInfo = new TypeReference<Map<String, List<FamilyInfoResponse>>>() {
+//        };
+//        Map<String, List<FamilyInfoResponse>> familyInfo = objectMapper.convertValue(claims.getPayload().get("familyInfo"), typeFamilyInfo);
+//        List<FamilyInfoResponse> familyInfoResponseList = familyInfo.get("familyInfo");
+
+        TypeReference<List<FamilyInfoResponse>> typeFamilyInfo = new TypeReference<List<FamilyInfoResponse>>() {
         };
-        Map<String, List<FamilyInfoResponse>> familyInfo = objectMapper.convertValue(claims.getPayload().get("familyInfo"), typeFamilyInfo);
-        List<FamilyInfoResponse> familyInfoResponseList = familyInfo.get("familyInfo");
+        List<FamilyInfoResponse> familyInfo = objectMapper.convertValue(claims.getPayload().get("familyInfo"), typeFamilyInfo);
 
-        return new UserInfoResponse(sn, familyInfoResponseList);
+        return new UserInfoResponse(sn, familyInfo);
     }
 
     public Authentication getAuthentication(String token) throws AuthException {
