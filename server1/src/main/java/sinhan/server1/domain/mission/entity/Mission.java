@@ -3,6 +3,7 @@ package sinhan.server1.domain.mission.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import sinhan.server1.domain.user.entity.User;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ public class Mission {
     private long parentsSn;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "child_sn", referencedColumnName = "serial_num", nullable = false, columnDefinition = "BIGINT UNSIGNED")
-    private long childSn;
+    private User child;
     @Column(name = "content", nullable = false)
     @Size(max = 255)
     private String content;
@@ -39,13 +40,13 @@ public class Mission {
     @Max(5)
     private int status;
 
-    public Mission(long parentsSn, long childSn, String content, int price, int status) {
+    public Mission(long parentsSn, User child, String content, int price, int status) {
         this.parentsSn = parentsSn;
-        this.childSn = childSn;
+        this.child = child;
         this.content = content;
         this.price = price;
         this.createDate = Timestamp.valueOf(LocalDateTime.now());
-        this.dueDate = Timestamp.valueOf(LocalDateTime.now().plus(72, ChronoUnit.HOURS));
+        this.dueDate = Timestamp.valueOf(LocalDateTime.now().plusHours(72));
         this.status = status;
     }
 }
