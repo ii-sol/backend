@@ -4,8 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-!**/src/main/**/secret
-application.properties
+/src/main/**/secret
 src/main/resources/.env
 
 ### STS ###
