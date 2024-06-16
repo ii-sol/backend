@@ -38,24 +38,34 @@ public class AuthController {
     }
 
     @PostMapping("/join")
-    public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest) {
+    public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest, HttpServletResponse response) {
         UserFindOneResponse user = authService.join(joinInfoSaveRequest);
 
-        return user != null ? success("가입되었습니다.") : error("가입에 실패하였습니다.", HttpStatus.BAD_REQUEST);
+        if (user != null) {
+            return success("가입되었습니다.");
+        } else {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return error("가입에 실패하였습니다.", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/login")
     public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException, JsonProcessingException {
-        UserFindOneResponse user = authService.login(loginInfoFindRequest);
-        List<FamilyInfoResponse> myFamilyInfo = authService.getFamilyInfo(user.getSerialNumber());
-        setFamilyName(myFamilyInfo);
+        try {
+            UserFindOneResponse user = authService.login(loginInfoFindRequest);
+            List<FamilyInfoResponse> myFamilyInfo = authService.getFamilyInfo(user.getSerialNumber());
+            setFamilyName(myFamilyInfo);
 
-        myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
+            myFamilyInfo.forEach(info -> log.info("Family Info - SN: {}, Name: {}", info.getSn(), info.getName()));
 
-        JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
-        jwtService.sendJwtToken(response, jwtTokenResponse);
+            JwtTokenResponse jwtTokenResponse = new JwtTokenResponse(jwtService.createAccessToken(user.getSerialNumber(), myFamilyInfo), jwtService.createRefreshToken(user.getSerialNumber()));
+            jwtService.sendJwtToken(response, jwtTokenResponse);
 
-        return success("로그인되었습니다.");
+            return success("로그인되었습니다.");
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return error("로그인에 실패하였습니다. " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     private void setFamilyName(List<FamilyInfoResponse> myFamilyInfo) {
@@ -71,6 +81,7 @@ public class AuthController {
     public ApiUtils.ApiResult refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = jwtService.getRefreshToken();
         if (refreshToken == null) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             return error("Refresh-Token을 찾지 못했습니다.", HttpStatus.BAD_REQUEST);
         }
 
@@ -82,8 +93,9 @@ public class AuthController {
             String newAccessToken = jwtService.createAccessToken(sn, myFamilyInfo);
             jwtService.sendAccessToken(response, newAccessToken);
             return success("Authorization이 새로 발급되었습니다.");
-        } catch (AuthException e) {
-            return error(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return error("Refresh-Token 검증에 실패하였습니다. " + e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 }
