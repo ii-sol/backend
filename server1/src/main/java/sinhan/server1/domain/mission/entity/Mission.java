@@ -1,13 +1,15 @@
 package sinhan.server1.domain.mission.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import sinhan.server1.domain.mission.dto.MissionFindOneResponse;
 import sinhan.server1.domain.user.entity.User;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -48,6 +50,10 @@ public class Mission {
         this.createDate = Timestamp.valueOf(LocalDateTime.now());
         this.dueDate = Timestamp.valueOf(LocalDateTime.now().plusHours(72));
         this.status = status;
+    }
+
+    public MissionFindOneResponse convertToMissionFindOneResponse() {
+        return new MissionFindOneResponse(id, parentsSn, child, content, price, createDate, dueDate, status);
     }
 }
 
