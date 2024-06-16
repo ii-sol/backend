@@ -120,4 +120,10 @@ public class GlobalExceptionHandler {
     public ApiResult<String> handleServletException(ServletException error) {
         return error(error.getMessage(), HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResult<String> handleNullPointerException(NullPointerException error) {
+        return error(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
