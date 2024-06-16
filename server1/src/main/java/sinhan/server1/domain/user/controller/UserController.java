@@ -86,7 +86,7 @@ public class UserController {
             throw new NoSuchElementException("부모 사용자가 존재하지 않습니다.");
         }
 
-        if (isConnected(familySn)) {
+        if (isDisconnected(familySn)) {
             boolean isDisconnected = userService.disconnectFamily(userInfo.getSn(), familySn);
 
             if (isDisconnected) {
@@ -104,6 +104,11 @@ public class UserController {
 
     private boolean isConnected(long familySn) {
         // TODO: 부모 서버 가족 관계 생성 이벤트 등록 - 콜백
+        return true;
+    }
+
+    private boolean isDisconnected(long familySn) {
+        // TODO: 부모 서버 가족 관계 삭제 이벤트 등록 - 콜백
         return true;
     }
 
