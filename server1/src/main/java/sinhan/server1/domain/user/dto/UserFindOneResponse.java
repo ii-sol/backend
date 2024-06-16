@@ -25,7 +25,6 @@ public class UserFindOneResponse {
     private Date birthdate;
     @JsonProperty(value = "profile_id")
     private int profileId;
-    private int score;
 
     public static UserFindOneResponse from(User user) {
         return UserFindOneResponse.builder()
@@ -35,7 +34,6 @@ public class UserFindOneResponse {
                 .name(user.getName())
                 .birthdate(user.getBirthDate())
                 .profileId(user.getProfileId())
-                .score(user.getScore())
                 .build();
     }
 

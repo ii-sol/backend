@@ -57,27 +57,6 @@ public class UserController {
         return user != null ? success(user) : error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("")
-    public ApiUtils.ApiResult connectFamily(@RequestBody FamilySaveRequest familySaveRequest) throws Exception {
-        UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
-
-        familySaveRequest.setUserSn(userInfo.getSn());
-
-        if (!isFamilyUser(familySaveRequest.getFamilySn())) {
-            throw new NoSuchElementException("부모 사용자가 존재하지 않습니다.");
-        }
-
-        if (isConnected(familySaveRequest.getFamilySn())) {
-            FamilyFindOneResponse family = userService.connectFamily(familySaveRequest);
-
-            if (family != null) {
-                return success("가족 관계가 생성되었습니다.");
-            }
-        }
-
-        return error("가족 관계가 생성되지 않았습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @DeleteMapping("/{family-sn}")
     public ApiUtils.ApiResult disconnectFamily(@PathVariable int familySn) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
@@ -112,12 +91,5 @@ public class UserController {
         List<String> phones = userService.getPhones();
 
         return phones.isEmpty() ? error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND) : success(phones);
-    }
-
-    @PutMapping("/score/{change}")
-    public ApiUtils.ApiResult updateScore(@PathVariable int change) throws Exception {
-        UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
-
-        return success(userService.updateScore(new ScoreUpdateRequest(userInfo.getSn(), change)));
     }
 }

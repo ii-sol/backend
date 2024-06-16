@@ -4,7 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import sinhan.server1.domain.user.dto.*;
+import sinhan.server1.domain.user.dto.UserFindOneResponse;
+import sinhan.server1.domain.user.dto.UserUpdateRequest;
 import sinhan.server1.domain.user.entity.Family;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.FamilyRepository;
@@ -23,7 +24,7 @@ public class UserService {
     private FamilyRepository familyRepository;
 
     @Transactional
-    public UserFindOneResponse getUser(long sn){
+    public UserFindOneResponse getUser(long sn) {
         User user = userRepository.findBySerialNum(sn)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
@@ -47,14 +48,6 @@ public class UserService {
     }
 
     @Transactional
-    public FamilyFindOneResponse connectFamily(FamilySaveRequest familySaveRequest) {
-        User user = userRepository.findBySerialNum(familySaveRequest.getUserSn())
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
-
-        return familyRepository.save(new Family(user, familySaveRequest.getFamilySn())).convertToFamilyFindOneResponse();
-    }
-
-    @Transactional
     public boolean disconnectFamily(long sn, long familySn) {
         User user = userRepository.findBySerialNum(sn)
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
@@ -72,15 +65,5 @@ public class UserService {
     @Transactional
     public List<String> getPhones() {
         return userRepository.findAllPhones();
-    }
-
-    public int updateScore(ScoreUpdateRequest scoreUpdateRequest) {
-        User user = userRepository.findBySerialNum(scoreUpdateRequest.getSn())
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
-
-        user.setScore(user.getScore() + scoreUpdateRequest.getChange());
-        User updatedUser = userRepository.save(user);
-
-        return updatedUser.getScore();
     }
 }
