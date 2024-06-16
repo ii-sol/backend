@@ -97,7 +97,7 @@ public class JwtService {
 
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_C");
 
-        return new UsernamePasswordAuthenticationToken(user, null, Collections.singletonList(authority));
+        return new UsernamePasswordAuthenticationToken(user, user.getAccountInfo(), Collections.singletonList(authority));
     }
 
     public void sendJwtToken(HttpServletResponse httpServletResponse, JwtTokenResponse jwtTokenResponse) {
