@@ -22,7 +22,8 @@ public class UserFindOneResponse {
     @JsonProperty(value = "phone_num")
     private String phoneNum;
     private String name;
-    private Date birthdate;
+    @JsonProperty(value = "birth_date")
+    private Date birthDate;
     @JsonProperty(value = "profile_id")
     private int profileId;
 
@@ -32,7 +33,7 @@ public class UserFindOneResponse {
                 .serialNumber(user.getSerialNum())
                 .phoneNum(user.getPhoneNum())
                 .name(user.getName())
-                .birthdate(user.getBirthDate())
+                .birthDate(user.getBirthDate())
                 .profileId(user.getProfileId())
                 .build();
     }
