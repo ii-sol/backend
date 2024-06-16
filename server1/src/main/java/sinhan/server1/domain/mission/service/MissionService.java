@@ -1,7 +1,14 @@
 package sinhan.server1.domain.mission.service;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import sinhan.server1.domain.mission.entity.Mission;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import sinhan.server1.domain.mission.repository.MissionRepository;
 
-public interface MissionService extends JpaRepository<Mission, Integer> {
+@Slf4j
+@Service
+@AllArgsConstructor
+public class MissionService {
+
+    private MissionRepository missionRepository;
 }
