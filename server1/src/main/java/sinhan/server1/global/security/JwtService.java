@@ -23,10 +23,7 @@ import sinhan.server1.domain.user.repository.UserRepository;
 import sinhan.server1.global.security.secret.Secret;
 import sinhan.server1.global.utils.exception.AuthException;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -58,7 +55,7 @@ public class JwtService {
     }
 
     public String createRefreshToken(long serialNumber) {
-        return createToken(serialNumber, null, REFRESH_TOKEN_EXPIRATION_TIME);
+        return createToken(serialNumber, new HashMap<>(), REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
     public String getAccessToken() {
@@ -99,8 +96,6 @@ public class JwtService {
         }
 
         long sn = claims.getPayload().get("sn", Long.class);
-//        Map<String, List<FamilyInfoResponse>> familyInfo = claims.getPayload().get("familyInfo", Map.class);
-//        List<FamilyInfoResponse> familyInfoResponseList = familyInfo.get("familyInfo");
 
         TypeReference<Map<String, List<FamilyInfoResponse>>> typeFamilyInfo = new TypeReference<Map<String, List<FamilyInfoResponse>>>() {
         };
