@@ -20,9 +20,7 @@ CREATE TABLE user (
     name VARCHAR(50) NOT NULL,
     birth_date DATE NOT NULL,
     account_info VARCHAR(255) NOT NULL,
-    profile_id TINYINT NOT NULL DEFAULT 1,
-    score TINYINT UNSIGNED NOT NULL DEFAULT 50,
-    CHECK (score >= 0 AND score <= 100)
+    profile_id TINYINT NOT NULL DEFAULT 1
 );
 
 CREATE TABLE family (
