@@ -102,8 +102,8 @@ public class UserController {
         return true;
     }
 
-    private boolean isConnected(long familySn) {
-        // TODO: 아이 서버 가족 관계 생성 이벤트 등록 - 콜백
+    private boolean isDisconnected(long familySn) {
+        // TODO: 아이 서버 가족 관계 삭제 이벤트 등록 - 콜백
         return true;
     }
 
