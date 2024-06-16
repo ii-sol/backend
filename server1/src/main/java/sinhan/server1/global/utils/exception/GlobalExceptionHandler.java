@@ -115,8 +115,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiResult<String> handleServletException(ServletException error) {
-        return error(error.getMessage(), HttpStatus.BAD_REQUEST);
+        return error(error.getMessage(), HttpStatus.FORBIDDEN);
     }
 }
