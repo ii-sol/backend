@@ -1,16 +1,12 @@
 package sinhan.server1.domain.user.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
 import sinhan.server1.domain.auth.dto.UserInfoResponse;
-import sinhan.server1.domain.user.dto.FamilyFindOneResponse;
-import sinhan.server1.domain.user.dto.FamilySaveRequest;
-import sinhan.server1.domain.user.dto.UserFindOneResponse;
-import sinhan.server1.domain.user.dto.UserUpdateRequest;
+import sinhan.server1.domain.user.dto.*;
 import sinhan.server1.domain.user.service.UserService;
 import sinhan.server1.global.security.JwtService;
 import sinhan.server1.global.utils.ApiUtils;
@@ -33,7 +29,7 @@ public class UserController {
     private JwtService jwtService;
 
     @GetMapping("/{sn}")
-    public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn) throws AuthException, JsonProcessingException {
+    public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
         if (userInfo.getSn() != sn) {
             List<FamilyInfoResponse> familyInfo = userInfo.getFamilyInfo();
@@ -53,16 +49,16 @@ public class UserController {
     }
 
     @PutMapping("")
-    public ApiUtils.ApiResult updateUser(@RequestBody UserUpdateRequest userUpdateRequest) throws AuthException, JsonProcessingException {
+    public ApiUtils.ApiResult updateUser(@RequestBody UserUpdateRequest userUpdateRequest) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
-
         userUpdateRequest.setSerialNum(userInfo.getSn());
+
         UserFindOneResponse user = userService.updateUser(userUpdateRequest);
         return user != null ? success(user) : error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("")
-    public ApiUtils.ApiResult connectFamily(@RequestBody FamilySaveRequest familySaveRequest) throws AuthException, JsonProcessingException {
+    public ApiUtils.ApiResult connectFamily(@RequestBody FamilySaveRequest familySaveRequest) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         familySaveRequest.setUserSn(userInfo.getSn());
@@ -83,7 +79,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{family-sn}")
-    public ApiUtils.ApiResult disconnectFamily(@PathVariable int familySn) throws AuthException, JsonProcessingException {
+    public ApiUtils.ApiResult disconnectFamily(@PathVariable int familySn) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         if (!isFamilyUser(familySn)) {
@@ -115,8 +111,13 @@ public class UserController {
     public ApiUtils.ApiResult getPhones() {
         List<String> phones = userService.getPhones();
 
-        return phones.isEmpty()
-                ? error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND)
-                : success(phones);
+        return phones.isEmpty() ? error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND) : success(phones);
+    }
+
+    @PutMapping("/score/{change}")
+    public ApiUtils.ApiResult updateScore(@PathVariable int change) throws Exception {
+        UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
+
+        return success(userService.updateScore(new ScoreUpdateRequest(userInfo.getSn(), change)));
     }
 }

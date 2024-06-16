@@ -4,10 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import sinhan.server1.domain.user.dto.FamilyFindOneResponse;
-import sinhan.server1.domain.user.dto.FamilySaveRequest;
-import sinhan.server1.domain.user.dto.UserFindOneResponse;
-import sinhan.server1.domain.user.dto.UserUpdateRequest;
+import sinhan.server1.domain.user.dto.*;
 import sinhan.server1.domain.user.entity.Family;
 import sinhan.server1.domain.user.entity.User;
 import sinhan.server1.domain.user.repository.FamilyRepository;
@@ -26,13 +23,18 @@ public class UserService {
     private FamilyRepository familyRepository;
 
     @Transactional
-    public UserFindOneResponse getUser(long sn) {
-        return findUser(sn).convertToUserFindOneResponse();
+    public UserFindOneResponse getUser(long sn){
+        User user = userRepository.findBySerialNum(sn)
+                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+
+        return user.convertToUserFindOneResponse();
     }
 
     @Transactional
     public UserFindOneResponse updateUser(UserUpdateRequest userUpdateRequest) {
-        User user = findUser(userUpdateRequest.getSerialNum());
+        User user = userRepository.findBySerialNum(userUpdateRequest.getSerialNum())
+                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+
 
         user.setPhoneNum(userUpdateRequest.getPhoneNum());
         user.setName(userUpdateRequest.getName());
@@ -41,19 +43,21 @@ public class UserService {
 
         User updatedUser = userRepository.save(user);
 
-        return getUser(updatedUser.getSerialNum());
+        return updatedUser.convertToUserFindOneResponse();
     }
 
     @Transactional
     public FamilyFindOneResponse connectFamily(FamilySaveRequest familySaveRequest) {
-        User user = findUser(familySaveRequest.getUserSn());
+        User user = userRepository.findBySerialNum(familySaveRequest.getUserSn())
+                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         return familyRepository.save(new Family(user, familySaveRequest.getFamilySn())).convertToFamilyFindOneResponse();
     }
 
     @Transactional
     public boolean disconnectFamily(long sn, long familySn) {
-        User user = findUser(sn);
+        User user = userRepository.findBySerialNum(sn)
+                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
 
         Family family = familyRepository
                 .findByUserSerialNumAndFamilySn(user, familySn)
@@ -70,8 +74,13 @@ public class UserService {
         return userRepository.findAllPhones();
     }
 
-    private User findUser(long sn) {
-        return userRepository.findBySerialNum(sn)
+    public int updateScore(ScoreUpdateRequest scoreUpdateRequest) {
+        User user = userRepository.findBySerialNum(scoreUpdateRequest.getSn())
                 .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+
+        user.setScore(user.getScore() + scoreUpdateRequest.getChange());
+        User updatedUser = userRepository.save(user);
+
+        return updatedUser.getScore();
     }
 }
