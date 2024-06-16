@@ -10,7 +10,7 @@ import sinhan.server1.domain.user.dto.FamilyFindOneResponse;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"parents_id", "child_id"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"parents_sn", "child_sn"})})
 public class Family {
 
     @Id
