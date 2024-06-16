@@ -2,10 +2,7 @@ package sinhan.server1.global.security;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -61,7 +58,7 @@ public class JwtService {
         return request.getHeader("Refresh-Token");
     }
 
-    public UserInfoResponse getUserInfo(String token) throws AuthException {
+    public UserInfoResponse getUserInfo(String token) throws AuthException, ExpiredJwtException {
         // 1. JWT 추출
         if (token == null || token.isEmpty()) {
             throw new AuthException("EMPTY_JWT");
@@ -94,7 +91,7 @@ public class JwtService {
         return new UserInfoResponse(sn, familyInfo);
     }
 
-    public Authentication getAuthentication(String token) throws AuthException {
+    public Authentication getAuthentication(String token) throws AuthException, ExpiredJwtException {
         UserInfoResponse userInfo = getUserInfo(token);
         User user = userRepository.findBySerialNum(userInfo.getSn()).orElseThrow(() -> new AuthException("USER_NOT_FOUND"));
 
