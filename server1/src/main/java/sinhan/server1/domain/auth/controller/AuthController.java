@@ -72,13 +72,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ApiUtils.ApiResult logout(HttpServletRequest request, HttpServletResponse response) {
-//        request.getSession().invalidate();
-
-//        response.setHeader("Authorization", null);
-//        response.setHeader("Refresh-Token", null);
-//        jwtService.sendJwtToken(response, new JwtTokenResponse());
-
-        return success("로그아웃되었습니다.");
+        return success(""); // main으로 redirection
     }
 
     @PostMapping("/token")
