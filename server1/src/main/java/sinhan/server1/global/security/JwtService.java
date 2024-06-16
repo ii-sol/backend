@@ -40,17 +40,7 @@ public class JwtService {
 
     private String createToken(long sn, List<FamilyInfoResponse> familyInfo, long expirationTime) {
         Date now = new Date();
-        return Jwts.builder()
-                .header()
-                .add("typ", TOKEN_TYPE)
-                .and()
-                .claim("sn", sn)
-                .claim("familyInfo", familyInfo)
-                .encodePayload(true)
-                .issuedAt(now)
-                .expiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(Secret.getJwtKey(), SignatureAlgorithm.HS256)
-                .compact();
+        return Jwts.builder().header().add("typ", TOKEN_TYPE).and().claim("sn", sn).claim("familyInfo", familyInfo).encodePayload(true).issuedAt(now).expiration(new Date(System.currentTimeMillis() + expirationTime)).signWith(Secret.getJwtKey(), SignatureAlgorithm.HS256).compact();
     }
 
     public String createAccessToken(long serialNumber, List<FamilyInfoResponse> familyInfo) {
@@ -83,10 +73,7 @@ public class JwtService {
 
         // 2. JWT parsing
         Jws<Claims> claims;
-        claims = Jwts.parser()
-                .verifyWith(Secret.getJwtKey())
-                .build()
-                .parseSignedClaims(token);
+        claims = Jwts.parser().verifyWith(Secret.getJwtKey()).build().parseSignedClaims(token);
 
         // 3. userInfo 추출
         return getUserInfoFromClaims(claims);
@@ -99,13 +86,6 @@ public class JwtService {
         }
 
         long sn = claims.getPayload().get("sn", Long.class);
-//        Map<String, List<FamilyInfoResponse>> familyInfo = claims.getPayload().get("familyInfo", Map.class);
-//        List<FamilyInfoResponse> familyInfoResponseList = familyInfo.get("familyInfo");
-
-//        TypeReference<Map<String, List<FamilyInfoResponse>>> typeFamilyInfo = new TypeReference<Map<String, List<FamilyInfoResponse>>>() {
-//        };
-//        Map<String, List<FamilyInfoResponse>> familyInfo = objectMapper.convertValue(claims.getPayload().get("familyInfo"), typeFamilyInfo);
-//        List<FamilyInfoResponse> familyInfoResponseList = familyInfo.get("familyInfo");
 
         TypeReference<List<FamilyInfoResponse>> typeFamilyInfo = new TypeReference<List<FamilyInfoResponse>>() {
         };
@@ -116,8 +96,7 @@ public class JwtService {
 
     public Authentication getAuthentication(String token) throws AuthException {
         UserInfoResponse userInfo = getUserInfo(token);
-        User user = userRepository.findBySerialNum(userInfo.getSn())
-                .orElseThrow(() -> new AuthException("USER_NOT_FOUND"));
+        User user = userRepository.findBySerialNum(userInfo.getSn()).orElseThrow(() -> new AuthException("USER_NOT_FOUND"));
 
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_C");
 

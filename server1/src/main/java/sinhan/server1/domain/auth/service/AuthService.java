@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
 import sinhan.server1.domain.auth.dto.JoinInfoSaveRequest;
@@ -39,8 +38,7 @@ public class AuthService {
 
     @Transactional
     public UserFindOneResponse login(@Valid LoginInfoFindRequest loginInfoFindRequest) throws AuthException {
-        User user = userRepository.findByPhoneNum(loginInfoFindRequest.getPhoneNum())
-                .orElseThrow(() -> new AuthException("INVALID_CREDENTIALS"));
+        User user = userRepository.findByPhoneNum(loginInfoFindRequest.getPhoneNum()).orElseThrow(() -> new AuthException("INVALID_CREDENTIALS"));
 
         if (!passwordEncoder.matches(loginInfoFindRequest.getAccountInfo(), user.getAccountInfo())) {
             throw new AuthException("INVALID_CREDENTIALS");
@@ -51,8 +49,6 @@ public class AuthService {
 
     @Transactional()
     public List<FamilyInfoResponse> getFamilyInfo(long sn) {
-        return familyRepository.findMyFamilyInfo(sn).stream()
-                .map(fi -> new FamilyInfoResponse(fi.getSn()))
-                .collect(Collectors.toList());
+        return familyRepository.findMyFamilyInfo(sn).stream().map(fi -> new FamilyInfoResponse(fi.getSn())).collect(Collectors.toList());
     }
 }
