@@ -86,6 +86,11 @@ public class UserController {
         return true;
     }
 
+    private boolean isDisconnected(long familySn) {
+        // TODO: 부모 서버 가족 관계 삭제 이벤트 등록 - 콜백
+        return true;
+    }
+
     @GetMapping("/phones")
     public ApiUtils.ApiResult getPhones() {
         List<String> phones = userService.getPhones();
