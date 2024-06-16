@@ -50,7 +50,7 @@ public class JwtService {
 
     public String getAccessToken() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        return request.getHeader("Authorization");
+        return request.getHeader("Authorization").substring(7);
     }
 
     public String getRefreshToken() {
@@ -62,10 +62,6 @@ public class JwtService {
         // 1. JWT 추출
         if (token == null || token.isEmpty()) {
             throw new AuthException("EMPTY_JWT");
-        }
-
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7).trim();
         }
 
         // 2. JWT parsing
