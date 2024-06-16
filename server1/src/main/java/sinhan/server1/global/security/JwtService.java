@@ -1,5 +1,7 @@
 package sinhan.server1.global.security;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -21,7 +23,10 @@ import sinhan.server1.domain.user.repository.UserRepository;
 import sinhan.server1.global.security.secret.Secret;
 import sinhan.server1.global.utils.exception.AuthException;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -31,16 +36,20 @@ public class JwtService {
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
     private UserRepository userRepository;
+    private ObjectMapper objectMapper;
 
     private String createToken(long sn, Map<String, List<FamilyInfoResponse>> familyInfo, long expirationTime) {
         Date now = new Date();
         return Jwts.builder()
-                .setHeaderParam("typ", TOKEN_TYPE)
+                .header()
+                .add("typ", TOKEN_TYPE)
+                .and()
                 .claim("sn", sn)
                 .claim("familyInfo", familyInfo)
+                .encodePayload(true)
                 .issuedAt(now)
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(SignatureAlgorithm.HS256, Secret.getJwtKey())
+                .signWith(Secret.getJwtKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -90,11 +99,14 @@ public class JwtService {
         }
 
         long sn = claims.getPayload().get("sn", Long.class);
-        LinkedHashMap<String, List<FamilyInfoResponse>> familyInfo = (LinkedHashMap<String, List<FamilyInfoResponse>>) claims.getPayload().get("familyInfo");
+//        Map<String, List<FamilyInfoResponse>> familyInfo = claims.getPayload().get("familyInfo", Map.class);
+//        List<FamilyInfoResponse> familyInfoResponseList = familyInfo.get("familyInfo");
+
+        TypeReference<Map<String, List<FamilyInfoResponse>>> typeFamilyInfo = new TypeReference<Map<String, List<FamilyInfoResponse>>>() {
+        };
+        Map<String, List<FamilyInfoResponse>> familyInfo = objectMapper.convertValue(claims.getPayload().get("familyInfo"), typeFamilyInfo);
         List<FamilyInfoResponse> familyInfoResponseList = familyInfo.get("familyInfo");
 
-//        return new UserInfoResponse(sn, familyInfo);
-//        return null;
         return new UserInfoResponse(sn, familyInfoResponseList);
     }
 
