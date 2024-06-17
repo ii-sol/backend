@@ -1,43 +1,48 @@
 package sinhan.server1.global.security;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
-import sinhan.server1.global.utils.exception.AuthException;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
 
 @AllArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    JwtService jwtService;
+    private final JwtService jwtService;
 
-    @SneakyThrows
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
-        String requestURI = ((HttpServletRequest) servletRequest).getRequestURI();
-
-        if (requestURI.startsWith("/auth")) {
-            filterChain.doFilter(servletRequest, servletResponse);
-            return;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String token = null;
+        try {
+            token = jwtService.getAccessToken();
+        } catch (NullPointerException e) {
+            token = null;
         }
 
-        String token = jwtService.getAccessToken();
-
+        Authentication authentication = null;
         if (token != null) {
-            Authentication authentication = null;
             try {
-                authentication = jwtService.getAuthentication(token);
-            } catch (AuthException e) {
-                throw new RuntimeException(e);
+                if (!jwtService.isTokenExpired(token)) {
+                    authentication = jwtService.getAuthentication(token);
+                }
+            } catch (Exception e) {
+                handleJwtServiceException(e, response);
             }
-            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        filterChain.doFilter(request, response);
+    }
+
+    private void handleJwtServiceException(Exception exception, HttpServletResponse response) throws IOException, IOException {
+        response.getWriter().write(exception.getMessage());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
