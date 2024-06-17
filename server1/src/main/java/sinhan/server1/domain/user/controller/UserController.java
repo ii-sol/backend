@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{family-sn}")
-    public ApiUtils.ApiResult disconnectFamily(@PathVariable int familySn) throws Exception {
+    public ApiUtils.ApiResult disconnectFamily(@PathVariable long familySn) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         if (!isFamilyUser(familySn)) {
@@ -83,11 +83,6 @@ public class UserController {
 
     private boolean isDisconnected(long familySn) {
         // TODO: 아이 서버 가족 관계 삭제 이벤트 등록 - 콜백
-        return true;
-    }
-
-    private boolean isDisconnected(long familySn) {
-        // TODO: 부모 서버 가족 관계 삭제 이벤트 등록 - 콜백
         return true;
     }
 
