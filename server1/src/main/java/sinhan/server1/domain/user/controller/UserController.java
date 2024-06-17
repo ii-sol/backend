@@ -79,7 +79,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{family-sn}")
-    public ApiUtils.ApiResult disconnectFamily(@PathVariable int familySn) throws Exception {
+    public ApiUtils.ApiResult disconnectFamily(@PathVariable long familySn) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         if (!isFamilyUser(familySn)) {
