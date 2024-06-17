@@ -15,8 +15,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
 import sinhan.server1.domain.auth.dto.JwtTokenResponse;
 import sinhan.server1.domain.auth.dto.UserInfoResponse;
-import sinhan.server1.domain.user.entity.User;
-import sinhan.server1.domain.user.repository.UserRepository;
 import sinhan.server1.global.security.secret.Secret;
 import sinhan.server1.global.utils.exception.AuthException;
 
@@ -32,7 +30,6 @@ public class JwtService {
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1800 * 1000; // 30 minutes
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 3 * 3600 * 1000; // 3 hours
     private static final String TOKEN_TYPE = "JWT";
-    private UserRepository userRepository;
     private ObjectMapper objectMapper;
 
     private String createToken(long sn, List<FamilyInfoResponse> familyInfo, long expirationTime) {
@@ -91,11 +88,9 @@ public class JwtService {
 
     public Authentication getAuthentication(String token) throws AuthException, ExpiredJwtException {
         UserInfoResponse userInfo = getUserInfo(token);
-        User user = userRepository.findBySerialNum(userInfo.getSn()).orElseThrow(() -> new AuthException("USER_NOT_FOUND"));
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
 
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_C");
-
-        return new UsernamePasswordAuthenticationToken(user, user.getAccountInfo(), Collections.singletonList(authority));
+        return new UsernamePasswordAuthenticationToken(userInfo.getSn(), Collections.singletonList(authority));
     }
 
     public void sendJwtToken(HttpServletResponse httpServletResponse, JwtTokenResponse jwtTokenResponse) {
