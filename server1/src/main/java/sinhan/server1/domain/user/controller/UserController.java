@@ -24,13 +24,12 @@ import static sinhan.server1.global.utils.ApiUtils.success;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/users")
 public class UserController {
 
     private UserService userService;
     private JwtService jwtService;
 
-    @GetMapping("/{sn}")
+    @GetMapping("/users/{sn}")
     public ApiUtils.ApiResult getUser(@PathVariable("sn") long sn) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
         if (userInfo.getSn() != sn) {
@@ -50,7 +49,7 @@ public class UserController {
         return user.getSerialNumber() == sn ? success(user) : error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("")
+    @PutMapping("/users")
     public ApiUtils.ApiResult updateUser(@RequestBody UserUpdateRequest userUpdateRequest) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
         userUpdateRequest.setSerialNum(userInfo.getSn());
@@ -59,7 +58,7 @@ public class UserController {
         return user != null ? success(user) : error("잘못된 사용자 요청입니다.", HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("/{family-sn}")
+    @DeleteMapping("/users/{family-sn}")
     public ApiUtils.ApiResult disconnectFamily(@PathVariable long familySn) throws Exception {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
@@ -88,19 +87,19 @@ public class UserController {
         return true;
     }
 
-    @GetMapping("/phones")
+    @GetMapping("/users/phones")
     public ApiUtils.ApiResult getPhones() {
         List<String> phones = userService.getPhones();
 
         return phones.isEmpty() ? error("전화번호부를 가져오지 못했습니다.", HttpStatus.NOT_FOUND) : success(phones);
     }
 
-    @GetMapping("/main")
+    @GetMapping("/auth/main")
     public ApiUtils.ApiResult main() {
         return success("초기 화면");
     }
 
-    @PostMapping("/join")
+    @PostMapping("/auth/join")
     public ApiUtils.ApiResult join(@Valid @RequestBody JoinInfoSaveRequest joinInfoSaveRequest, HttpServletResponse response) {
         UserFindOneResponse user = userService.join(joinInfoSaveRequest);
 
@@ -112,7 +111,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ApiUtils.ApiResult login(@Valid @RequestBody LoginInfoFindRequest loginInfoFindRequest, HttpServletResponse response) throws AuthException, JsonProcessingException {
         try {
             UserFindOneResponse user = userService.login(loginInfoFindRequest);
@@ -135,12 +134,12 @@ public class UserController {
         // TODO: 부모 이름 가져오기 이벤트 등록 - 콜백
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/auth/logout")
     public ApiUtils.ApiResult logout(HttpServletRequest request, HttpServletResponse response) {
         return success(""); // main으로 redirection
     }
 
-    @PostMapping("/token")
+    @PostMapping("/auth/token")
     public ApiUtils.ApiResult refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = jwtService.getRefreshToken();
         if (refreshToken == null) {
