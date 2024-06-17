@@ -13,6 +13,7 @@ import java.sql.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name="CHILD")
 @Check(constraints = "score >= 0 AND score <= 100")
 public class User {
 

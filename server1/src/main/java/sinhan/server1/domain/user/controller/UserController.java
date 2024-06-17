@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sinhan.server1.domain.user.dto.*;
 import sinhan.server1.domain.user.service.UserService;
-import sinhan.server1.global.security.JwtService;
 import sinhan.server1.global.utils.ApiUtils;
 import sinhan.server1.global.utils.exception.AuthException;
 
