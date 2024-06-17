@@ -6,7 +6,6 @@ build/
 !**/src/test/**/build/
 /src/main/**/secret
 src/main/resources/.env
-src/main/java/sinhan/server1/domain/account
 
 ### STS ###
 .apt_generated
