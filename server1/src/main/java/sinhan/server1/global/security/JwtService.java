@@ -48,12 +48,12 @@ public class JwtService {
         return createToken(serialNumber, new ArrayList<>(), REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
-    public String getAccessToken() {
+    public String getAccessToken() throws ExpiredJwtException, NullPointerException {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         return request.getHeader("Authorization").substring(7);
     }
 
-    public String getRefreshToken() {
+    public String getRefreshToken() throws ExpiredJwtException, NullPointerException {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         return request.getHeader("Refresh-Token");
     }
@@ -65,8 +65,10 @@ public class JwtService {
         }
 
         // 2. JWT parsing
-        Jws<Claims> claims;
-        claims = Jwts.parser().verifyWith(Secret.getJwtKey()).build().parseSignedClaims(token);
+        Jws<Claims> claims = Jwts.parser()
+                .verifyWith(Secret.getJwtKey())
+                .build()
+                .parseSignedClaims(token);
 
         // 3. userInfo 추출
         return getUserInfoFromClaims(claims);
@@ -103,5 +105,19 @@ public class JwtService {
 
     public void sendAccessToken(HttpServletResponse httpServletResponse, String accessToken) {
         httpServletResponse.setHeader("Authorization", "Bearer " + accessToken);
+    }
+
+    public boolean isTokenExpired(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(Secret.getJwtKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            Date expiration = claims.getExpiration();
+            return expiration.before(new Date());
+        } catch (ExpiredJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
+            return true;
+        }
     }
 }
