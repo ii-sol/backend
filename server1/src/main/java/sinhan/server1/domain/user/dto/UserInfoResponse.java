@@ -1,4 +1,4 @@
-package sinhan.server1.domain.auth.dto;
+package sinhan.server1.domain.user.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

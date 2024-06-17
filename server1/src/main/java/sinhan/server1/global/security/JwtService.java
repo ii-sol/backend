@@ -12,9 +12,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import sinhan.server1.domain.auth.dto.FamilyInfoResponse;
-import sinhan.server1.domain.auth.dto.JwtTokenResponse;
-import sinhan.server1.domain.auth.dto.UserInfoResponse;
+import sinhan.server1.domain.user.dto.FamilyInfoResponse;
+import sinhan.server1.domain.user.dto.JwtTokenResponse;
+import sinhan.server1.domain.user.dto.UserInfoResponse;
 import sinhan.server1.global.security.secret.Secret;
 import sinhan.server1.global.utils.exception.AuthException;
 
