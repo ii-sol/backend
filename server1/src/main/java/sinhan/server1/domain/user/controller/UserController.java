@@ -130,7 +130,7 @@ public class UserController {
     }
 
     private void setFamilyName(List<FamilyInfoResponse> myFamilyInfo) {
-        // TODO: 부모 이름 가져오기 이벤트 등록 - 콜백
+        // TODO: 아이 이름 가져오기 이벤트 등록 - 콜백
     }
 
     @PostMapping("/auth/logout")
