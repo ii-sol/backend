@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import sinhan.server1.domain.user.dto.FamilyInfoResponse;
 import sinhan.server1.domain.user.dto.JoinInfoSaveRequest;
 import sinhan.server1.domain.user.dto.LoginInfoFindRequest;
 import sinhan.server1.domain.user.dto.UserFindOneResponse;

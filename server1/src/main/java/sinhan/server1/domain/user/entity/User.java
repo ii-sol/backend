@@ -12,6 +12,7 @@ import java.sql.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name="PARENTS")
 public class User {
 
     @Id
@@ -28,7 +29,7 @@ public class User {
     @Column(name = "account_info", nullable = false)
     private String accountInfo;
     @Column(name = "profile_id", nullable = false, columnDefinition = "TINYINT UNSIGNED DEFAULT 1")
-    private int profileId;
+    private int profileId = 1;
 
     public User(long serialNum, String phoneNum, String name, Date birthDate, String accountInfo, int profileId) {
         this.serialNum = serialNum;
