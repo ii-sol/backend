@@ -62,7 +62,7 @@ public class UserController {
         UserInfoResponse userInfo = jwtService.getUserInfo(jwtService.getAccessToken());
 
         if (!isFamilyUser(familySn)) {
-            throw new NoSuchElementException("부모 사용자가 존재하지 않습니다.");
+            throw new NoSuchElementException("아이 사용자가 존재하지 않습니다.");
         }
 
         if (isDisconnected(familySn)) {
